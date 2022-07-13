@@ -1,8 +1,10 @@
 # Zotero PDF Preview
 
-![teaser](./image/README/teaser.png)
+![teaser](./image/README/teaser.gif)
 
-Preview PDF attachments in the library view.
+Preview PDF attachments in the library view.  
+
+Fast & easy. Do not require any third-party softwares.
 
 # Quick Start Guide
 
@@ -15,6 +17,11 @@ Preview PDF attachments in the library view.
 - Browse to where you downloaded the `.xpi` file and select it.
 - Restart Zotero, by clicking `restart now` in the extensions list where the
   Zotero PDF Translate plugin is now listed.
+
+## Settings
+
+- Disable PDF Auto Preview  
+Menu -> View -> Auto Preview PDF(check/uncheck)
 
 ## Development & Contributing
 
