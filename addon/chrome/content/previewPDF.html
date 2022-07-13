@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta name="google" content="notranslate" />
+
+    <style>
+      body {
+        background-color: #808080;
+        margin: 0;
+        padding: 0;
+      }
+      .flexViewer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .flexPage {
+        margin-bottom: 10px !important;
+      }
+    </style>
+
+    <link rel="stylesheet" href="resource://zotero/pdf-reader/viewer.css" />
+
+    <script src="chrome://zotero/content/include.js"></script>
+    <script src="resource://zotero/pdf-reader/pdf.js"></script>
+  </head>
+
+  <body tabindex="1">
+    <div id="pdf-viewer" class="pdfViewer flexViewer"></div>
+
+    <script>
+      var itemID = -1;
+      function renderPage(pdf, pageNumber, canvas, width) {
+        pdf.getPage(pageNumber).then(function (page) {
+          viewport = page.getViewport({ scale: 1 });
+          const ctx = canvas.getContext("2d");
+          const dpr = window.devicePixelRatio || 1;
+          const bsr =
+            ctx.webkitBackingStorePixelRatio ||
+            ctx.mozBackingStorePixelRatio ||
+            ctx.msBackingStorePixelRatio ||
+            ctx.oBackingStorePixelRatio ||
+            ctx.backingStorePixelRatio ||
+            1;
+          const ratio = dpr / bsr;
+          const resizeRatio = width / viewport.width;
+          viewport.width *= resizeRatio;
+          viewport.height *= resizeRatio;
+          canvas.width = viewport.width * ratio;
+          canvas.height = viewport.height * ratio;
+          canvas.style.width = viewport.width + "px";
+          canvas.style.height = viewport.height + "px";
+          ctx.setTransform(
+            ratio * resizeRatio,
+            0,
+            0,
+            ratio * resizeRatio,
+            0,
+            0
+          );
+          console.log("Rendering", pageNumber);
+          page.render({
+            canvasContext: ctx,
+            viewport: viewport,
+          });
+        });
+      }
+
+      async function renderPreview(buf, id, width) {
+        // let item = Zotero.PDFPreview.preview.item;
+        // Block other possible renders
+        Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
+
+        try {
+          pdfjsLib.getDocument(buf).promise.then((pdf) => {
+            viewer = document.getElementById("pdf-viewer");
+            viewer.innerHTML = "";
+            let lastNumber = pdf.numPages > 10 ? 10 : pdf.numPages;
+            for (i = 1; i <= lastNumber; i++) {
+              if (id !== itemID) {
+                // Stop current render if there is a new item
+                console.log(id, itemID, "Eraly stop rendering");
+                break;
+              }
+              canvas = document.createElement("canvas");
+              canvas.className = "pdf-page-canvas flexPage";
+              viewer.appendChild(canvas);
+              renderPage(pdf, i, canvas, width);
+            }
+            Zotero.PDFPreview.preview._loadingPromise.resolve();
+          });
+        } catch (e) {
+          Zotero.PDFPreview.preview._loadingPromise.resolve();
+          throw e;
+        }
+      }
+
+      function handler(e) {
+        console.log(e);
+        if (e.data.type === "renderPreview") {
+          itemID = e.data.itemID;
+          renderPreview(e.data.buffer, e.data.itemID, e.data.width);
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("message", handler, false);
+      });
+
+      window.addEventListener("load", async () => {
+        var USE_ONLY_CSS_ZOOM = true;
+        var TEXT_LAYER_MODE = 0; // DISABLE
+        var MAX_IMAGE_SIZE = 1024 * 1024;
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "resource://zotero/pdf-reader/pdf.worker.js";
+
+        Zotero.PDFPreview.preview._initPromise &&
+          Zotero.PDFPreview.preview._initPromise.resolve();
+      });
+    </script>
+  </body>
+</html>

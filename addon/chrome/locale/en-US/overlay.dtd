@@ -1,0 +1,7 @@
+<!ENTITY zotero.__addonRef__.tab.label "Preview">
+<!ENTITY zotero.__addonRef__.autopreview.label "Auto Preview PDF">
+
+<!ENTITY zotero.__addonRef__.help.feedback.caption.label "User Guide and Feedback">
+<!ENTITY zotero.__addonRef__.help.feedback.label "GitHub">
+<!ENTITY zotero.__addonRef__.help.version.label "VERSION __buildVersion__">
+<!ENTITY zotero.__addonRef__.help.releasetime.label "Build __buildTime__">

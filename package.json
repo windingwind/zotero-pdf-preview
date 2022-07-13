@@ -1,0 +1,37 @@
+{
+  "name": "zotero-pdf-preview",
+  "addonName": "Zotero PDF Preview",
+  "addonID": "pdfpreview@windingwind.com",
+  "addonRef": "pdfpreview",
+  "version": "0.0.0",
+  "description": "PDF Preview for Zotero.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node start.js",
+    "stop": "node stop.js",
+    "prerestart": "npm run build",
+    "restart": "node restart.js",
+    "release": "release-it",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windingwind/zotero-pdf-preview.git"
+  },
+  "author": "windingwind",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/windingwind/zotero-pdf-preview/issues"
+  },
+  "homepage": "https://github.com/windingwind/zotero-pdf-previews#readme",
+  "dependencies": {
+    "compressing": "^1.5.1",
+    "esbuild": "^0.14.34",
+    "replace-in-file": "^6.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.31",
+    "release-it": "^14.14.0"
+  }
+}
