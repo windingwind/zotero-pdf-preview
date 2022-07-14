@@ -94,7 +94,10 @@
         console.log(e);
         if (e.data.type === "renderPreview") {
           if (itemID !== e.data.itemID) {
+            // Destroy worker to avoid memory leak
+            pdf && pdf.destroy();
             pdf = await pdfjsLib.getDocument(e.data.buffer).promise;
+            delete e.data.buffer;
             itemID = e.data.itemID;
           }
           renderPreview(e.data.itemID, e.data.width);
