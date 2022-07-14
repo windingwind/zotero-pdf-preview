@@ -71,7 +71,11 @@
         try {
           viewer = document.getElementById("pdf-viewer");
           viewer.innerHTML = "";
-          let lastNumber = pdf.numPages > 10 ? 10 : pdf.numPages;
+          const maxPageNum = Number(
+            Zotero.Prefs.get("pdfpreview.previewPageNum")
+          );
+          let lastNumber =
+            pdf.numPages > maxPageNum ? maxPageNum : pdf.numPages;
           for (i = 1; i <= lastNumber; i++) {
             if (id !== itemID) {
               // Stop current render if there is a new item

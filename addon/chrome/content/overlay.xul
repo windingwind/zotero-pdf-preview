@@ -17,10 +17,6 @@
 <overlay id="__addonRef__" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script src="chrome://__addonRef__/content/scripts/index.js" />
 
-    <menupopup id="menu_viewPopup">
-        <menuitem id="menu_autopreview_pdfpreview" type="checkbox" label="&zotero.__addonRef__.autopreview.label;" oncommand="Zotero.PDFPreview.events.setAutoPreview();" />
-    </menupopup>
-
     <tabbox id="zotero-view-tabbox">
         <tabs id="zotero-editpane-tabs">
             <tab id="pdf-preview-tab" label="&zotero.__addonRef__.tab.label;"></tab>

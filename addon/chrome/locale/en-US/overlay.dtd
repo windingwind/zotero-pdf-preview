@@ -1,5 +1,10 @@
+<!ENTITY zotero.__addonRef__.pref.label "Preview">
+<!ENTITY zotero.__addonRef__.pref.enable.label "Enable Preview">
+<!ENTITY zotero.__addonRef__.pref.autoPreview.label "Auto Preview PDF">
+<!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "Preview First">
+<!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages">
+
 <!ENTITY zotero.__addonRef__.tab.label "Preview">
-<!ENTITY zotero.__addonRef__.autopreview.label "Auto Preview PDF">
 
 <!ENTITY zotero.__addonRef__.help.feedback.caption.label "User Guide and Feedback">
 <!ENTITY zotero.__addonRef__.help.feedback.label "GitHub">

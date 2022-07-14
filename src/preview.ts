@@ -41,6 +41,9 @@ class AddonPreview extends AddonBase {
   }
 
   public async preview(force: boolean = false) {
+    if (Zotero.Prefs.get("pdfpreview.enable") === false) {
+      return;
+    }
     let item = this.updatePreviewItem();
     console.log(item);
     if (force && !item) {
@@ -90,7 +93,7 @@ class AddonPreview extends AddonBase {
         },
         "*"
       );
-      if (Zotero.Prefs.get("PDFPreview.autoPreview")) {
+      if (Zotero.Prefs.get("pdfpreview.autoPreview")) {
         this._Addon.events.updatePreviewTabSelection();
       }
     } else {

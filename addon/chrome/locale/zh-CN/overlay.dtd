@@ -1,5 +1,10 @@
+<!ENTITY zotero.__addonRef__.pref.label "预览">
+<!ENTITY zotero.__addonRef__.pref.enable.label "启用预览">
+<!ENTITY zotero.__addonRef__.pref.autoPreview.label "自动预览PDF">
+<!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "预览前">
+<!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "页">
+
 <!ENTITY zotero.__addonRef__.tab.label "预览">
-<!ENTITY zotero.__addonRef__.autopreview.label "自动预览PDF">
 
 <!ENTITY zotero.__addonRef__.help.feedback.caption.label "User Guide and Feedback">
 <!ENTITY zotero.__addonRef__.help.feedback.label "GitHub">
