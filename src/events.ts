@@ -6,6 +6,7 @@ class AddonEvents extends AddonBase {
     await Zotero.uiReadyPromise;
     this.initItemSelectListener();
     this.initPreviewResizeListener();
+    this.updatePreviewTabName();
   }
 
   private initItemSelectListener() {
@@ -29,6 +30,14 @@ class AddonEvents extends AddonBase {
       previewTab
     );
     (tabbox as any).selectedIndex = tabIndex;
+  }
+
+  private updatePreviewTabName() {
+    let label = "";
+
+    label = Zotero.Prefs.get("pdfpreview.previewTabName");
+    const previewTab = window.document.querySelector("#pdf-preview-tab");
+    previewTab.setAttribute("label", label);
   }
 }
 

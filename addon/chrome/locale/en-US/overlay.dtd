@@ -3,6 +3,8 @@
 <!ENTITY zotero.__addonRef__.pref.autoPreview.label "Auto Preview PDF">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "Preview First">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages">
+<!ENTITY zotero.__addonRef__.pref.previewTabNameBefore.label "Preview Tab Name">
+<!ENTITY zotero.__addonRef__.pref.previewTabNameAfter.label "(Restart Zotero to Apply Changes)">
 
 <!ENTITY zotero.__addonRef__.tab.label "Preview">
 

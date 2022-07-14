@@ -3,6 +3,8 @@
 <!ENTITY zotero.__addonRef__.pref.autoPreview.label "自动预览PDF">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "预览前">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "页">
+<!ENTITY zotero.__addonRef__.pref.previewTabNameBefore.label "预览标签名称">
+<!ENTITY zotero.__addonRef__.pref.previewTabNameAfter.label "(重启Zotero以应用更改)">
 
 <!ENTITY zotero.__addonRef__.tab.label "预览">
 
