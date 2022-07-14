@@ -35,9 +35,11 @@
 
     <script>
       var itemID = -1;
-      function renderPage(pdf, pageNumber, canvas, width) {
-        pdf.getPage(pageNumber).then(function (page) {
-          viewport = page.getViewport({ scale: 1 });
+      var pdf;
+      function renderPage(currentPdf, pageNumber, canvas, width) {
+        currentPdf.getPage(pageNumber).then(function (page) {
+          const W = page.view[2];
+          viewport = page.getViewport({ scale: width / W });
           const ctx = canvas.getContext("2d");
           const dpr = window.devicePixelRatio || 1;
           const bsr =
@@ -48,21 +50,11 @@
             ctx.backingStorePixelRatio ||
             1;
           const ratio = dpr / bsr;
-          const resizeRatio = width / viewport.width;
-          viewport.width *= resizeRatio;
-          viewport.height *= resizeRatio;
           canvas.width = viewport.width * ratio;
           canvas.height = viewport.height * ratio;
           canvas.style.width = viewport.width + "px";
           canvas.style.height = viewport.height + "px";
-          ctx.setTransform(
-            ratio * resizeRatio,
-            0,
-            0,
-            ratio * resizeRatio,
-            0,
-            0
-          );
+          ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
           console.log("Rendering", pageNumber);
           page.render({
             canvasContext: ctx,
@@ -71,40 +63,41 @@
         });
       }
 
-      async function renderPreview(buf, id, width) {
+      async function renderPreview(id, width) {
         // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
         Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
 
         try {
-          pdfjsLib.getDocument(buf).promise.then((pdf) => {
-            viewer = document.getElementById("pdf-viewer");
-            viewer.innerHTML = "";
-            let lastNumber = pdf.numPages > 10 ? 10 : pdf.numPages;
-            for (i = 1; i <= lastNumber; i++) {
-              if (id !== itemID) {
-                // Stop current render if there is a new item
-                console.log(id, itemID, "Eraly stop rendering");
-                break;
-              }
-              canvas = document.createElement("canvas");
-              canvas.className = "pdf-page-canvas flexPage";
-              viewer.appendChild(canvas);
-              renderPage(pdf, i, canvas, width);
+          viewer = document.getElementById("pdf-viewer");
+          viewer.innerHTML = "";
+          let lastNumber = pdf.numPages > 10 ? 10 : pdf.numPages;
+          for (i = 1; i <= lastNumber; i++) {
+            if (id !== itemID) {
+              // Stop current render if there is a new item
+              console.log(id, itemID, "Eraly stop rendering");
+              break;
             }
-            Zotero.PDFPreview.preview._loadingPromise.resolve();
-          });
+            canvas = document.createElement("canvas");
+            canvas.className = "pdf-page-canvas flexPage";
+            viewer.appendChild(canvas);
+            renderPage(pdf, i, canvas, width);
+          }
+          Zotero.PDFPreview.preview._loadingPromise.resolve();
         } catch (e) {
           Zotero.PDFPreview.preview._loadingPromise.resolve();
           throw e;
         }
       }
 
-      function handler(e) {
+      async function handler(e) {
         console.log(e);
         if (e.data.type === "renderPreview") {
-          itemID = e.data.itemID;
-          renderPreview(e.data.buffer, e.data.itemID, e.data.width);
+          if (itemID !== e.data.itemID) {
+            pdf = await pdfjsLib.getDocument(e.data.buffer).promise;
+            itemID = e.data.itemID;
+          }
+          renderPreview(e.data.itemID, e.data.width);
         }
       }
 

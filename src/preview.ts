@@ -10,18 +10,26 @@ class AddonPreview extends AddonBase {
     if (!items.length) {
       return false;
     }
-    items = items
-      .filter((e) => e.isRegularItem())
-      .map((e) =>
-        (Zotero.Items.get(e.getAttachments()) as ZoteroItem[]).filter((att) =>
-          att.isPDFAttachment()
-        )
-      )
-      .find((e) => e.length);
-    if (!items) {
+    let item: ZoteroItem;
+    for (const _item of items) {
+      if (false && _item.isPDFAttachment()) {
+        // Disable for now. The PDF doesn't have a side bar
+        item = _item;
+        break;
+      } else if (_item.isRegularItem()) {
+        const attachment = (
+          Zotero.Items.get(_item.getAttachments()) as ZoteroItem[]
+        ).find((att) => att.isPDFAttachment());
+        if (attachment) {
+          item = attachment;
+          break;
+        }
+      }
+    }
+    if (!item || (this.item && item.id === this.item.id)) {
       return false;
     }
-    this.item = items[0];
+    this.item = item;
     return this.item;
   }
 
@@ -32,9 +40,12 @@ class AddonPreview extends AddonBase {
     return new Uint8Array(buf).buffer;
   }
 
-  public async preview() {
-    const item = this.updatePreviewItem();
+  public async preview(force: boolean = false) {
+    let item = this.updatePreviewItem();
     console.log(item);
+    if (force && !item) {
+      item = this.item;
+    }
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;

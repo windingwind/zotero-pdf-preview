@@ -19,7 +19,7 @@ class AddonEvents extends AddonBase {
   private initPreviewResizeListener() {
     const splitter = window.document.getElementById("zotero-items-splitter");
     splitter.addEventListener("mouseup", (e) => {
-      this._Addon.preview.preview();
+      this._Addon.preview.preview(true);
     });
   }
 

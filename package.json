@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/windingwind/zotero-pdf-preview/issues"
   },
-  "homepage": "https://github.com/windingwind/zotero-pdf-previews#readme",
+  "homepage": "https://github.com/windingwind/zotero-pdf-preview#readme",
   "dependencies": {
     "compressing": "^1.5.1",
     "esbuild": "^0.14.34",
