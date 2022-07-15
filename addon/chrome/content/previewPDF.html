@@ -100,7 +100,11 @@
           if (itemID !== e.data.itemID) {
             // Destroy worker to avoid memory leak
             pdf && pdf.destroy();
-            pdf = await pdfjsLib.getDocument(e.data.buffer).promise;
+            pdf = await pdfjsLib.getDocument({
+              data: e.data.buffer,
+              cMapUrl: "resource://zotero/pdf-reader/cmaps/",
+              cMapPacked: true,
+            }).promise;
             delete e.data.buffer;
             itemID = e.data.itemID;
           }

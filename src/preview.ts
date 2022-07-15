@@ -26,7 +26,7 @@ class AddonPreview extends AddonBase {
         }
       }
     }
-    if (!item || (this.item && item.id === this.item.id)) {
+    if (!item) {
       return false;
     }
     this.item = item;
@@ -96,6 +96,7 @@ class AddonPreview extends AddonBase {
       if (Zotero.Prefs.get("pdfpreview.autoPreview")) {
         this._Addon.events.updatePreviewTabSelection();
       }
+      previewIframe.hidden = false;
     } else {
       console.log("hide preview");
       let previewIframe: HTMLIFrameElement = document.querySelector(
