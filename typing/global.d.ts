@@ -82,7 +82,6 @@ declare const OS: {
 declare const NetUtil: { [attr: string]: any };
 
 declare interface ZoteroItem {
-  getFilePathAsync(): any;
   id: number;
   isRegularItem: () => boolean;
   isNote: () => boolean;
@@ -121,11 +120,15 @@ declare interface ZoteroItem {
   getNotes: () => ZoteroItem[];
   getCollections: () => number[];
   getAttachments: () => number[];
+  getAnnotations(): ZoteroItem[];
+  getFilePathAsync(): any;
   getTags: () => { tag: string; type: number }[];
   annotationType?: string;
   annotationComment?: string;
   annotationText?: string;
   annotationPosition: string;
+  annotationPageLabel: any;
+  annotationColor: any;
   save: (obj?: any) => Promise<void>;
   saveTx: (obj?: any) => Promise<void>;
   addToCollection(id: number);

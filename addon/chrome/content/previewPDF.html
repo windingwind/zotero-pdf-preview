@@ -36,10 +36,12 @@
     <script>
       var itemID = -1;
       var pdf;
-      function renderPage(currentPdf, pageNumber, canvas, width) {
+      function renderPage(currentPdf, pageNumber, canvas, width, annotations) {
         currentPdf.getPage(pageNumber).then(function (page) {
           const W = page.view[2];
-          viewport = page.getViewport({ scale: width / W });
+          const H = page.view[3];
+          const totalScale = width / W;
+          viewport = page.getViewport({ scale: totalScale });
           const ctx = canvas.getContext("2d");
           const dpr = window.devicePixelRatio || 1;
           const bsr =
@@ -56,14 +58,64 @@
           canvas.style.height = viewport.height + "px";
           ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
           console.log("Rendering", pageNumber);
-          page.render({
-            canvasContext: ctx,
-            viewport: viewport,
-          });
+          page
+            .render({
+              canvasContext: ctx,
+              viewport: viewport,
+            })
+            .promise.then(() => {
+              // Render annotations
+              for (const annot of annotations) {
+                _ctx = canvas.getContext("2d");
+                _ctx.globalAlpha = 0.5;
+                _ctx.fillStyle = annot.color;
+                _ctx.strokeStyle = annot.color;
+                if (annot.type === "highlight") {
+                  // Rectangle
+                  for (rect of annot.position.rects) {
+                    _ctx.fillRect(
+                      rect[0] * totalScale,
+                      (H - rect[3]) * totalScale,
+                      (rect[2] - rect[0]) * totalScale,
+                      (rect[3] - rect[1]) * totalScale
+                    );
+                  }
+                } else if (annot.type === "image" || annot.type === "note") {
+                  // Box
+                  for (rect of annot.position.rects) {
+                    _ctx.strokeRect(
+                      rect[0] * totalScale,
+                      (H - rect[3]) * totalScale,
+                      (rect[2] - rect[0]) * totalScale,
+                      (rect[3] - rect[1]) * totalScale
+                    );
+                  }
+                } else if (annot.type === "ink") {
+                  // Lines
+                  _ctx.lineWidth = annot.position.width;
+                  _ctx.lineCap = "round";
+                  _ctx.lineJoin = "round";
+                  _ctx.beginPath();
+                  _ctx.moveTo(
+                    annot.position.paths[0][0] * totalScale,
+                    (H - annot.position.paths[1][0]) * totalScale
+                  );
+                  for (i = 1; i < annot.position.paths[0].length; i++) {
+                    _ctx.lineTo(
+                      annot.position.paths[0][i] * totalScale,
+                      (H - annot.position.paths[1][i]) * totalScale
+                    );
+                  }
+                  _ctx.stroke();
+                } else {
+                  continue;
+                }
+              }
+            });
         });
       }
 
-      async function renderPreview(id, width) {
+      async function renderPreview(id, width, annotations) {
         // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
         Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
@@ -88,10 +140,14 @@
               console.log(id, itemID, "Eraly stop rendering");
               break;
             }
+            const currentAnnotations = annotations.filter(
+              (annot) => Number(annot.pageLabel) === i
+            );
+            console.log(annotations, currentAnnotations);
             canvas = document.createElement("canvas");
             canvas.className = "pdf-page-canvas flexPage";
             viewer.appendChild(canvas);
-            renderPage(pdf, i, canvas, width);
+            renderPage(pdf, i, canvas, width, currentAnnotations);
           }
           Zotero.PDFPreview.preview._loadingPromise.resolve();
         } catch (e) {
@@ -114,7 +170,7 @@
             delete e.data.buffer;
             itemID = e.data.itemID;
           }
-          renderPreview(e.data.itemID, e.data.width);
+          renderPreview(e.data.itemID, e.data.width, e.data.annotations);
         }
       }
 

@@ -1,5 +1,17 @@
 import { AddonBase } from "./base";
 
+class Annotation {
+  type: string;
+  position: any;
+  color: string;
+  pageLabel: string;
+  constructor(type, position, color, pageLabel) {
+    this.type = type;
+    this.position = position;
+    this.color = color;
+    this.pageLabel = pageLabel;
+  }
+}
 class AddonPreview extends AddonBase {
   item: ZoteroItem;
   _initPromise: any;
@@ -90,6 +102,19 @@ class AddonPreview extends AddonBase {
           itemID: this.item.id,
           buffer: await this.getBuffer(),
           width: width - 40,
+          annotations: Zotero.Prefs.get("pdfpreview.showAnnotations")
+            ? item
+                .getAnnotations()
+                .map(
+                  (i) =>
+                    new Annotation(
+                      i.annotationType,
+                      JSON.parse(i.annotationPosition),
+                      i.annotationColor,
+                      i.annotationPageLabel
+                    )
+                )
+            : [],
         },
         "*"
       );
