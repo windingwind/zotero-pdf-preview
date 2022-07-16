@@ -9,6 +9,8 @@
         <preference id="pref-__addonRef__-enable" name="extensions.zotero.__addonRef__.enable" type="bool" />
         <preference id="pref-__addonRef__-autoPreview" name="extensions.zotero.__addonRef__.autoPreview" type="bool" />
         <preference id="pref-__addonRef__-showAnnotations" name="extensions.zotero.__addonRef__.showAnnotations" type="bool" />
+        <preference id="pref-__addonRef__-showHover" name="extensions.zotero.__addonRef__.showHover" type="bool" />
+        <preference id="pref-__addonRef__-enableJump" name="extensions.zotero.__addonRef__.enableJump" type="bool" />
         <preference id="pref-__addonRef__-darkMode" name="extensions.zotero.__addonRef__.darkMode" type="bool" />
         <preference id="pref-__addonRef__-previewPageNum" name="extensions.zotero.__addonRef__.previewPageNum" type="string" />
         <preference id="pref-__addonRef__-previewTabName" name="extensions.zotero.__addonRef__.previewTabName" type="string" />
@@ -22,6 +24,12 @@
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-showAnnotations" preference="pref-__addonRef__-showAnnotations" label="&zotero.__addonRef__.pref.showAnnotations.label;" />
+        </row>
+        <row>
+          <checkbox id="zotero-prefpane-__addonRef__-settings-showHover" preference="pref-__addonRef__-showHover" label="&zotero.__addonRef__.pref.showHover.label;" />
+        </row>
+        <row>
+          <checkbox id="zotero-prefpane-__addonRef__-settings-enableJump" preference="pref-__addonRef__-enableJump" label="&zotero.__addonRef__.pref.enableJump.label;" />
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-darkMode" preference="pref-__addonRef__-darkMode" label="&zotero.__addonRef__.pref.darkMode.label;" />

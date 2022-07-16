@@ -20,7 +20,12 @@
         align-items: center;
       }
       .flexPage {
-        margin-bottom: 10px !important;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+      }
+      .allowFocus:hover {
+        box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
       }
     </style>
 
@@ -58,6 +63,33 @@
           canvas.height = viewport.height * ratio;
           canvas.style.width = viewport.width + "px";
           canvas.style.height = viewport.height + "px";
+          if (Zotero.Prefs.get("pdfpreview.showHover")) {
+            canvas.className += " allowFocus";
+          }
+          if (Zotero.Prefs.get("pdfpreview.enableJump")) {
+            canvas.addEventListener("dblclick", async (e) => {
+              // Code from zotero link handler
+              let opened = false;
+              const item = Zotero.PDFPreview.preview.item;
+              try {
+                opened = await Zotero.OpenPDF.openToPage(item, pageNumber);
+              } catch (e) {
+                Zotero.debug(e);
+              }
+
+              // If something went wrong, just open PDF without page
+              try {
+                if (!opened) {
+                  Zotero.debug("Launching PDF without page number");
+                  ZoteroPane.viewAttachment([item.id]);
+                }
+                Zotero.Notifier.trigger("open", "file", item.id);
+              } catch (e) {
+                Zotero.debug(e);
+              }
+            });
+          }
+
           ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
           console.log("Rendering", pageNumber);
           page
@@ -101,7 +133,6 @@
                         rect[0] * totalScale,
                         (H - rect[3]) * totalScale
                       );
-                      callback();
                     };
                     let str =
                       "data:image/svg+xml; charset=utf8, " +
@@ -158,19 +189,15 @@
           );
           let lastNumber =
             pdf.numPages > maxPageNum ? maxPageNum : pdf.numPages;
-          let pageLabels =
-            (await pdf.getPageLabels()) ||
-            // Create page lables equals to page indices
-            [...Array(lastNumber)].map((e, i) => String(1 + i));
           for (i = 1; i <= lastNumber; i++) {
             if (id !== itemID) {
               // Stop current render if there is a new item
               console.log(id, itemID, "Eraly stop rendering");
               break;
             }
-            // page index starts from 1
+            // pdf.js page index starts from 1
             const currentAnnotations = annotations.filter(
-              (annot) => annot.pageLabel === pageLabels[i - 1]
+              (annot) => annot.position.pageIndex === i - 1
             );
             console.log(annotations, currentAnnotations);
             canvas = document.createElement("canvas");

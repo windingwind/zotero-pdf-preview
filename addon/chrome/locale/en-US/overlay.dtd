@@ -2,6 +2,8 @@
 <!ENTITY zotero.__addonRef__.pref.enable.label "Enable Preview">
 <!ENTITY zotero.__addonRef__.pref.autoPreview.label "Auto Focus Preview Tab">
 <!ENTITY zotero.__addonRef__.pref.showAnnotations.label "Show Annotations">
+<!ENTITY zotero.__addonRef__.pref.showHover.label "Show Hovered Page Style">
+<!ENTITY zotero.__addonRef__.pref.enableJump.label "Double-click Preview Page to Open/Jump PDF">
 <!ENTITY zotero.__addonRef__.pref.darkMode.label "Dark Mode">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "Preview First">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages">
