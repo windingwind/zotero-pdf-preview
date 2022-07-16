@@ -134,14 +134,19 @@
           );
           let lastNumber =
             pdf.numPages > maxPageNum ? maxPageNum : pdf.numPages;
+          let pageLabels =
+            (await pdf.getPageLabels()) ||
+            // Create page lables equals to page indices
+            [...Array(lastNumber)].map((e, i) => String(1 + i));
           for (i = 1; i <= lastNumber; i++) {
             if (id !== itemID) {
               // Stop current render if there is a new item
               console.log(id, itemID, "Eraly stop rendering");
               break;
             }
+            // page index starts from 1
             const currentAnnotations = annotations.filter(
-              (annot) => Number(annot.pageLabel) === i
+              (annot) => annot.pageLabel === pageLabels[i - 1]
             );
             console.log(annotations, currentAnnotations);
             canvas = document.createElement("canvas");
