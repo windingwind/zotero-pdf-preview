@@ -31,8 +31,6 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Preview First _N_ Pages | Set how many pages you want to appear in preview. More pages will make the preview slower. Set to `1` for the cover view. | `10` |
 | Preview Tab Name | Set the tab label. | `preview` |
 
-Menu -> View -> Auto Preview PDF(check/uncheck)
-
 ## Development & Contributing
 
 This add-on is built on the Zotero Addon Template of [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate).
