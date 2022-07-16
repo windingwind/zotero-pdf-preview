@@ -36,6 +36,8 @@
     <script>
       var itemID = -1;
       var pdf;
+      var noteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="__size__" height="__size__" viewBox="0 0 24 24"><polygon fill="__color__" points="0.5 0.5 23.5 0.5 23.5 23.5 11.5 23.5 0.5 12.5 0.5 0.5"></polygon><polygon points="0.5 12.5 11.5 12.5 11.5 23.5 0.5 12.5" fill="#fff" opacity="0.4"></polygon><path d="M0,0V12.707L11.293,24H24V0ZM11,22.293,1.707,13H11ZM23,23H12V12H1V1H23Z"></path></svg>`;
+
       function renderPage(currentPdf, pageNumber, canvas, width, annotations) {
         currentPdf.getPage(pageNumber).then(function (page) {
           const W = page.view[2];
@@ -80,7 +82,7 @@
                       (rect[3] - rect[1]) * totalScale
                     );
                   }
-                } else if (annot.type === "image" || annot.type === "note") {
+                } else if (annot.type === "image") {
                   // Box
                   for (rect of annot.position.rects) {
                     _ctx.strokeRect(
@@ -90,23 +92,45 @@
                       (rect[3] - rect[1]) * totalScale
                     );
                   }
+                } else if (annot.type === "note") {
+                  for (rect of annot.position.rects) {
+                    const img = new Image();
+                    img.onload = function () {
+                      _ctx.drawImage(
+                        this,
+                        rect[0] * totalScale,
+                        (H - rect[3]) * totalScale
+                      );
+                      callback();
+                    };
+                    let str =
+                      "data:image/svg+xml; charset=utf8, " +
+                      encodeURIComponent(
+                        noteIcon
+                          .replace(/__size__/g, 24 * totalScale)
+                          .replace(/__color__/g, annot.color)
+                      );
+                    img.src = str;
+                  }
                 } else if (annot.type === "ink") {
                   // Lines
                   _ctx.lineWidth = annot.position.width;
                   _ctx.lineCap = "round";
                   _ctx.lineJoin = "round";
-                  _ctx.beginPath();
-                  _ctx.moveTo(
-                    annot.position.paths[0][0] * totalScale,
-                    (H - annot.position.paths[1][0]) * totalScale
-                  );
-                  for (i = 1; i < annot.position.paths[0].length; i++) {
-                    _ctx.lineTo(
-                      annot.position.paths[0][i] * totalScale,
-                      (H - annot.position.paths[1][i]) * totalScale
+                  for (path of annot.position.paths) {
+                    _ctx.beginPath();
+                    _ctx.moveTo(
+                      path[0] * totalScale,
+                      (H - path[1]) * totalScale
                     );
+                    for (i = 2; i < path.length; i += 2) {
+                      _ctx.lineTo(
+                        path[i] * totalScale,
+                        (H - path[i + 1]) * totalScale
+                      );
+                    }
+                    _ctx.stroke();
                   }
-                  _ctx.stroke();
                 } else {
                   continue;
                 }
