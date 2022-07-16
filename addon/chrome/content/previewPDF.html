@@ -101,11 +101,18 @@
               // Render annotations
               for (const annot of annotations) {
                 _ctx = canvas.getContext("2d");
-                _ctx.globalAlpha = 0.5;
+                _ctx.globalAlpha = 1;
                 _ctx.fillStyle = annot.color;
                 _ctx.strokeStyle = annot.color;
+                _ctx.lineWidth = annot.position.width
+                  ? annotations.position.width
+                  : 2;
+                _ctx.lineCap = "round";
+                _ctx.lineJoin = "round";
                 if (annot.type === "highlight") {
                   // Rectangle
+                  // Set alpha to keep the text visible
+                  _ctx.globalAlpha = 0.5;
                   for (rect of annot.position.rects) {
                     _ctx.fillRect(
                       rect[0] * totalScale,
@@ -145,9 +152,6 @@
                   }
                 } else if (annot.type === "ink") {
                   // Lines
-                  _ctx.lineWidth = annot.position.width;
-                  _ctx.lineCap = "round";
-                  _ctx.lineJoin = "round";
                   for (path of annot.position.paths) {
                     _ctx.beginPath();
                     _ctx.moveTo(
