@@ -27,6 +27,8 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Enable Preview | Enable to allow the preview behavior. | `true` |
 | Auto Focus Preview Tab | Enable to focus the preview tab automatically when you select a valid preview item. | `false` |
 | Show Annotations | Enable to show annotations of the PDF files. May slow down the preview speed. | `false` |
+| Show Hovered Page Style | Enable extra style of the hovered page: box shadow and hand cursor. | `true` |
+| Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF. | `true` |
 | Dark Mode | Enable to preview PDF files in dark mode. This is a naive dark mode and images color may not be displayed correctly. | `false` |
 | Preview First _N_ Pages | Set how many pages you want to appear in preview. More pages will make the preview slower. Set to `1` for the cover view. | `10` |
 | Preview Tab Name | Set the tab label. | `preview` |
