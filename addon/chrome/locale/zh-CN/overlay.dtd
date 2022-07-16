@@ -1,6 +1,7 @@
 <!ENTITY zotero.__addonRef__.pref.label "预览">
 <!ENTITY zotero.__addonRef__.pref.enable.label "启用预览">
-<!ENTITY zotero.__addonRef__.pref.autoPreview.label "自动预览PDF">
+<!ENTITY zotero.__addonRef__.pref.autoPreview.label "自动选中预览">
+<!ENTITY zotero.__addonRef__.pref.darkMode.label "黑暗模式">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "预览前">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "页">
 <!ENTITY zotero.__addonRef__.pref.previewTabNameBefore.label "预览标签名称">

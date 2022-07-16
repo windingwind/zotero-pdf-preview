@@ -67,6 +67,12 @@
         // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
         Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
+        const viewerContainer = document.getElementById("pdf-viewer");
+        if (Zotero.Prefs.get("pdfpreview.darkMode")) {
+          viewerContainer.style.filter = "invert(100%)";
+        } else {
+          viewerContainer.style.removeProperty("filter");
+        }
 
         try {
           viewer = document.getElementById("pdf-viewer");

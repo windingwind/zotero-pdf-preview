@@ -1,6 +1,7 @@
 <!ENTITY zotero.__addonRef__.pref.label "Preview">
 <!ENTITY zotero.__addonRef__.pref.enable.label "Enable Preview">
-<!ENTITY zotero.__addonRef__.pref.autoPreview.label "Auto Preview PDF">
+<!ENTITY zotero.__addonRef__.pref.autoPreview.label "Auto Focus Preview Tab">
+<!ENTITY zotero.__addonRef__.pref.darkMode.label "Dark Mode">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "Preview First">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages">
 <!ENTITY zotero.__addonRef__.pref.previewTabNameBefore.label "Preview Tab Name">

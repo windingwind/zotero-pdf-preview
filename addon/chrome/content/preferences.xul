@@ -8,6 +8,7 @@
       <preferences id="zotero-preferences-__addonRef__">
         <preference id="pref-__addonRef__-enable" name="extensions.zotero.__addonRef__.enable" type="bool" />
         <preference id="pref-__addonRef__-autoPreview" name="extensions.zotero.__addonRef__.autoPreview" type="bool" />
+        <preference id="pref-__addonRef__-darkMode" name="extensions.zotero.__addonRef__.darkMode" type="bool" />
         <preference id="pref-__addonRef__-previewPageNum" name="extensions.zotero.__addonRef__.previewPageNum" type="string" />
         <preference id="pref-__addonRef__-previewTabName" name="extensions.zotero.__addonRef__.previewTabName" type="string" />
       </preferences>
@@ -17,6 +18,9 @@
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-autoPreview" preference="pref-__addonRef__-autoPreview" label="&zotero.__addonRef__.pref.autoPreview.label;" />
+        </row>
+        <row>
+          <checkbox id="zotero-prefpane-__addonRef__-settings-darkMode" preference="pref-__addonRef__-darkMode" label="&zotero.__addonRef__.pref.darkMode.label;" />
         </row>
         <row>
           <label control="zotero-prefpane-__addonRef__-settings-previewPageNum" value="&zotero.__addonRef__.pref.previewPageNumBefore.label;" />
