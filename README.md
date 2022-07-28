@@ -25,6 +25,8 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Setting | Details | Default Value |
 | ---- | ---- | ---- |
 | Enable Preview | Enable to allow the preview behavior. | `true` |
+| Preview in Info Tab | Enable to show the preview in a split view under 'info' tab. | `true` |
+| Preview in 'Preview' Tab | Enable show the preview in a new tab of right sidebar. | `true` |
 | Auto Focus Preview Tab | Enable to focus the preview tab automatically when you select a valid preview item. | `false` |
 | Show Annotations | Enable to show annotations of the PDF files. May slow down the preview speed. | `false` |
 | Show Hovered Page Style | Enable extra style of the hovered page: box shadow and hand cursor. | `true` |
