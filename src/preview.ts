@@ -52,8 +52,13 @@ class AddonPreview extends AddonBase {
     return new Uint8Array(buf).buffer;
   }
 
-  public async preview(force: boolean = false) {
-    if (Zotero.Prefs.get("pdfpreview.enable") === false) {
+  public async preview(type: string = "preview", force: boolean = false) {
+    if (
+      Zotero.Prefs.get("pdfpreview.enable") === false ||
+      Zotero.Prefs.get(
+        `pdfpreview.${type === "preview" ? "enableTab" : "enableSplit"}`
+      ) === false
+    ) {
       return;
     }
     let item = this.updatePreviewItem();
@@ -61,24 +66,25 @@ class AddonPreview extends AddonBase {
     if (force && !item) {
       item = this.item;
     }
+    const previewId = `pdf-preview-${type}-container`;
+    let previewIframe = document.getElementById(previewId) as HTMLIFrameElement;
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;
       }
-      let previewIframe: HTMLIFrameElement = document.querySelector(
-        "#pdf-preview-container"
-      );
       if (!previewIframe) {
         console.log("init preview iframe");
         this._initPromise = Zotero.Promise.defer();
         previewIframe = window.document.createElement("iframe");
-        previewIframe.setAttribute("id", "pdf-preview-container");
+        previewIframe.setAttribute("id", previewId);
         previewIframe.setAttribute(
           "src",
           "chrome://PDFPreview/content/previewPDF.html"
         );
 
-        const container = document.querySelector("#pdf-preview-tabpanel");
+        const container = document.querySelector(
+          type === "preview" ? "#pdf-preview-tabpanel" : "#pdf-preview-infosplit"
+        );
         if (!container) {
           return;
         }
@@ -124,9 +130,6 @@ class AddonPreview extends AddonBase {
       previewIframe.hidden = false;
     } else {
       console.log("hide preview");
-      let previewIframe: HTMLIFrameElement = document.querySelector(
-        "#pdf-preview-container"
-      );
       if (previewIframe) {
         previewIframe.hidden = true;
       }

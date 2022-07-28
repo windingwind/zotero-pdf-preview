@@ -63,6 +63,11 @@ declare namespace XUL {
   class ListItem extends XUL.Element {
     public selectedItem?: XUL.Element;
   }
+
+  class Splitter extends XUL.Element {
+    public collapse?: "none" | "before" | "after";
+    public state?: "open" | "collapsed" | "dragging";
+  }
 }
 
 declare class ClassList {

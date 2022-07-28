@@ -7,6 +7,8 @@
     <prefpane id="zotero-prefpane-__addonRef__" insertafter="zotero-prefpane-advanced" label="&zotero.__addonRef__.pref.label;" image="chrome://__addonRef__/skin/favicon.png">
       <preferences id="zotero-preferences-__addonRef__">
         <preference id="pref-__addonRef__-enable" name="extensions.zotero.__addonRef__.enable" type="bool" />
+        <preference id="pref-__addonRef__-enableSplit" name="extensions.zotero.__addonRef__.enableSplit" type="bool" />
+        <preference id="pref-__addonRef__-enableTab" name="extensions.zotero.__addonRef__.enableTab" type="bool" />
         <preference id="pref-__addonRef__-autoPreview" name="extensions.zotero.__addonRef__.autoPreview" type="bool" />
         <preference id="pref-__addonRef__-showAnnotations" name="extensions.zotero.__addonRef__.showAnnotations" type="bool" />
         <preference id="pref-__addonRef__-showHover" name="extensions.zotero.__addonRef__.showHover" type="bool" />
@@ -18,6 +20,12 @@
       <rows>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-enable" preference="pref-__addonRef__-enable" label="&zotero.__addonRef__.pref.enable.label;" />
+        </row>
+        <row>
+          <checkbox id="zotero-prefpane-__addonRef__-settings-enableSplit" preference="pref-__addonRef__-enableSplit" label="&zotero.__addonRef__.pref.enableSplit.label;" />
+        </row>
+        <row>
+          <checkbox id="zotero-prefpane-__addonRef__-settings-enableTab" preference="pref-__addonRef__-enableTab" label="&zotero.__addonRef__.pref.enableTab.label;" />
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-autoPreview" preference="pref-__addonRef__-autoPreview" label="&zotero.__addonRef__.pref.autoPreview.label;" />
