@@ -100,13 +100,20 @@ class AddonEvents extends AddonBase {
   private initPreviewInfoSplit() {
     const zitembox = document.querySelector("#zotero-editpane-item-box");
     zitembox.parentElement.setAttribute("orient", "vertical");
-    const div = document.createElement("div");
-    div.id = "pdf-preview-infosplit";
-    zitembox.before(div);
+    const divBefore = document.createElement("div");
+    divBefore.id = "pdf-preview-infosplit-before";
+    const divAfter = document.createElement("div");
+    divAfter.id = "pdf-preview-infosplit-after";
+    zitembox.before(divBefore);
+    zitembox.after(divAfter);
     const splitter = document.createElement("splitter") as XUL.Splitter;
-    splitter.id = "pdf-preview-infosplit-splitter";
+    splitter.id = "pdf-preview-infosplit-splitter-before";
     splitter.collapse = "before";
-    div.after(splitter);
+    divBefore.after(splitter);
+    const splitterAfter = document.createElement("splitter") as XUL.Splitter;
+    splitterAfter.id = "pdf-preview-infosplit-splitter-after";
+    splitterAfter.collapse = "after";
+    divAfter.before(splitterAfter);
     // window.addEventListener("resize", (e) => {
     //   this.resizePreviewSplit(!Zotero.Prefs.get("pdfpreview.enableSplit"));
     // });
@@ -114,11 +121,14 @@ class AddonEvents extends AddonBase {
 
   private updatePreviewInfoSplit() {
     const hidden = !Zotero.Prefs.get("pdfpreview.enableSplit");
+    const splitType: "before" | "after" = Zotero.Prefs.get(
+      "pdfpreview.splitType"
+    );
     const splitContainer: HTMLDivElement = document.querySelector(
-      "#pdf-preview-infosplit"
+      `#pdf-preview-infosplit-${splitType}`
     );
     const splitSplitter: HTMLDivElement = document.querySelector(
-      "#pdf-preview-infosplit-splitter"
+      `#pdf-preview-infosplit-splitter-${splitType}`
     );
     if (hidden) {
       splitContainer.style.height = "0px";
@@ -129,6 +139,19 @@ class AddonEvents extends AddonBase {
       splitContainer.style.removeProperty("visibility");
       splitSplitter.style.removeProperty("visibility");
     }
+
+    // Hide another preview
+    const hiddenType: "before" | "after" =
+      splitType === "before" ? "after" : "before";
+    const hiddenContainer: HTMLDivElement = document.querySelector(
+      `#pdf-preview-infosplit-${hiddenType}`
+    );
+    const hiddenSplitter: HTMLDivElement = document.querySelector(
+      `#pdf-preview-infosplit-splitter-${hiddenType}`
+    );
+    hiddenContainer.style.height = "0px";
+    hiddenContainer.style.visibility = "hidden";
+    hiddenSplitter.style.visibility = "hidden";
   }
 }
 

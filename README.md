@@ -26,6 +26,7 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | ---- | ---- | ---- |
 | Enable Preview | Enable to allow the preview behavior. | `true` |
 | Preview in Info Tab | Enable to show the preview in a split view under 'info' tab. | `true` |
+| Preview Position | Preview position in the Info Tab | `bottom` |
 | Preview in 'Preview' Tab | Enable show the preview in a new tab of right sidebar. | `true` |
 | Auto Focus Preview Tab | Enable to focus the preview tab automatically when you select a valid preview item. | `false` |
 | Show Annotations | Enable to show annotations of the PDF files. May slow down the preview speed. | `false` |

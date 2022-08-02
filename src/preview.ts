@@ -66,6 +66,12 @@ class AddonPreview extends AddonBase {
     if (force && !item) {
       item = this.item;
     }
+    const splitType: "before" | "after" = Zotero.Prefs.get(
+      "pdfpreview.splitType"
+    );
+    if (type === "info") {
+      type = `${type}-${splitType}`;
+    }
     const previewId = `pdf-preview-${type}-container`;
     let previewIframe = document.getElementById(previewId) as HTMLIFrameElement;
     if (item) {
@@ -83,7 +89,9 @@ class AddonPreview extends AddonBase {
         );
 
         const container = document.querySelector(
-          type === "preview" ? "#pdf-preview-tabpanel" : "#pdf-preview-infosplit"
+          type === "preview"
+            ? "#pdf-preview-tabpanel"
+            : `#pdf-preview-infosplit-${splitType}`
         );
         if (!container) {
           return;

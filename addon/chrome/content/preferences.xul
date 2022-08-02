@@ -8,6 +8,7 @@
       <preferences id="zotero-preferences-__addonRef__">
         <preference id="pref-__addonRef__-enable" name="extensions.zotero.__addonRef__.enable" type="bool" />
         <preference id="pref-__addonRef__-enableSplit" name="extensions.zotero.__addonRef__.enableSplit" type="bool" />
+        <preference id="pref-__addonRef__-splitType" name="extensions.zotero.__addonRef__.splitType" type="string" />
         <preference id="pref-__addonRef__-enableTab" name="extensions.zotero.__addonRef__.enableTab" type="bool" />
         <preference id="pref-__addonRef__-autoPreview" name="extensions.zotero.__addonRef__.autoPreview" type="bool" />
         <preference id="pref-__addonRef__-showAnnotations" name="extensions.zotero.__addonRef__.showAnnotations" type="bool" />
@@ -23,6 +24,11 @@
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-enableSplit" preference="pref-__addonRef__-enableSplit" label="&zotero.__addonRef__.pref.enableSplit.label;" />
+          <label value="&zotero.__addonRef__.pref.splitPosition.label;" />
+          <radiogroup preference="pref-__addonRef__-splitType" orient="horizontal">
+            <radio label="&zotero.__addonRef__.pref.splitBefore.label;" value="before"></radio>
+            <radio label="&zotero.__addonRef__.pref.splitAfter.label;" value="after"></radio>
+          </radiogroup>
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-enableTab" preference="pref-__addonRef__-enableTab" label="&zotero.__addonRef__.pref.enableTab.label;" />
