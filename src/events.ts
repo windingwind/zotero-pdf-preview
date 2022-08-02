@@ -1,7 +1,9 @@
 import { AddonBase } from "./base";
 
 class AddonEvents extends AddonBase {
+  private previewType: string;
   public async onInit() {
+    this.previewType = "normal";
     Zotero.debug("PDFPreview: init called");
     await Zotero.uiReadyPromise;
     this.initItemSelectListener();
@@ -97,29 +99,61 @@ class AddonEvents extends AddonBase {
     }
   }
 
-  private initPreviewInfoSplit() {
-    const zitembox = document.querySelector("#zotero-editpane-item-box");
+  public initPreviewInfoSplit(zitembox: Element = undefined) {
+    zitembox = zitembox || document.querySelector("#zotero-editpane-item-box");
+    console.log(zitembox, zitembox.parentElement);
     zitembox.parentElement.setAttribute("orient", "vertical");
-    const divBefore = document.createElement("div");
-    divBefore.id = "pdf-preview-infosplit-before";
-    const divAfter = document.createElement("div");
-    divAfter.id = "pdf-preview-infosplit-after";
-    zitembox.before(divBefore);
-    zitembox.after(divAfter);
-    const splitter = document.createElement("splitter") as XUL.Splitter;
-    splitter.id = "pdf-preview-infosplit-splitter-before";
-    splitter.collapse = "before";
-    divBefore.after(splitter);
+    const boxBefore = document.createElement("box");
+    boxBefore.id = "pdf-preview-infosplit-before";
+    const boxAfter = document.createElement("box");
+    boxAfter.id = "pdf-preview-infosplit-after";
+    zitembox.before(boxBefore);
+    zitembox.after(boxAfter);
+    const splitterBefore = document.createElement("splitter") as XUL.Splitter;
+    splitterBefore.id = "pdf-preview-infosplit-splitter-before";
+    splitterBefore.collapse = "before";
+    boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
     splitterAfter.id = "pdf-preview-infosplit-splitter-after";
     splitterAfter.collapse = "after";
-    divAfter.before(splitterAfter);
+    boxAfter.before(splitterAfter);
     // window.addEventListener("resize", (e) => {
     //   this.resizePreviewSplit(!Zotero.Prefs.get("pdfpreview.enableSplit"));
     // });
   }
 
   private updatePreviewInfoSplit() {
+    // Check BBT layout
+    const BBTBox = document
+      .getElementById("zotero-editpane-item-box")
+      .parentElement.querySelector("#better-bibtex-editpane-item-box");
+    if (BBTBox && this.previewType !== "BBT") {
+      this.previewType = "BBT";
+      const toRemove = [
+        "pdf-preview-infosplit-before",
+        "pdf-preview-infosplit-after",
+        "pdf-preview-infosplit-splitter-before",
+        "pdf-preview-infosplit-splitter-after",
+      ];
+      toRemove.forEach((_id) => {
+        const ele = document.getElementById(_id);
+        if (ele) {
+          ele.remove();
+        }
+      });
+      console.log("re-init preview for BBT");
+      this.initPreviewInfoSplit(BBTBox.parentElement);
+      // Swith selected tab to trigger some re-render of splitter
+      // Otherwise the splitters are unvisible
+      const tabbox: any = window.document.querySelector("#zotero-view-tabbox");
+      const tabIndex = tabbox.selectedIndex;
+      tabbox.selectedIndex =
+        tabIndex === tabbox.childNodes.length - 1 ? 1 : tabIndex + 1;
+      setTimeout(() => {
+        tabbox.selectedIndex = tabIndex;
+      }, 1);
+    }
+
     const hidden = !Zotero.Prefs.get("pdfpreview.enableSplit");
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
@@ -131,11 +165,11 @@ class AddonEvents extends AddonBase {
       `#pdf-preview-infosplit-splitter-${splitType}`
     );
     if (hidden) {
-      splitContainer.style.height = "0px";
+      splitContainer.setAttribute("height", "0");
       splitContainer.style.visibility = "hidden";
       splitSplitter.style.visibility = "hidden";
     } else {
-      splitContainer.style.height = "400px";
+      splitContainer.setAttribute("height", "400");
       splitContainer.style.removeProperty("visibility");
       splitSplitter.style.removeProperty("visibility");
     }
@@ -149,7 +183,7 @@ class AddonEvents extends AddonBase {
     const hiddenSplitter: HTMLDivElement = document.querySelector(
       `#pdf-preview-infosplit-splitter-${hiddenType}`
     );
-    hiddenContainer.style.height = "0px";
+    hiddenContainer.setAttribute("height", "0");
     hiddenContainer.style.visibility = "hidden";
     hiddenSplitter.style.visibility = "hidden";
   }
