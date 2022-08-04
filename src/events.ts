@@ -52,10 +52,13 @@ class AddonEvents extends AddonBase {
   private doPreview() {
     this.updatePreviewTab();
     const previewType = this.getPreviewType();
+    console.log(previewType);
     if (previewType === PreviewType.info) {
       this.updatePreviewInfoSplit();
     } else if (previewType === PreviewType.attachment) {
       this.updatePreviewAttachmentSplit();
+    } else if (previewType === PreviewType.null) {
+      return;
     }
     this._Addon.preview.preview(previewType);
   }
@@ -141,8 +144,9 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-infosplit-before")
           .getAttribute("height")
       );
-      this.previewSplitCollapsed =
-        splitterBefore.getAttribute("state") === "collapsed";
+      this.setSplitCollapsed(
+        splitterBefore.getAttribute("state") === "collapsed"
+      );
     });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
@@ -156,8 +160,9 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-infosplit-after")
           .getAttribute("height")
       );
-      this.previewSplitCollapsed =
-        splitterAfter.getAttribute("state") === "collapsed";
+      this.setSplitCollapsed(
+        splitterAfter.getAttribute("state") === "collapsed"
+      );
     });
     boxAfter.before(splitterAfter);
   }
@@ -183,8 +188,9 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-attachment-before")
           .getAttribute("height")
       );
-      this.previewSplitCollapsed =
-        splitterBefore.getAttribute("state") === "collapsed";
+      this.setSplitCollapsed(
+        splitterBefore.getAttribute("state") === "collapsed"
+      );
     });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
@@ -198,8 +204,9 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-attachment-after")
           .getAttribute("height")
       );
-      this.previewSplitCollapsed =
-        splitterAfter.getAttribute("state") === "collapsed";
+      this.setSplitCollapsed(
+        splitterAfter.getAttribute("state") === "collapsed"
+      );
     });
     boxAfter.before(splitterAfter);
   }
@@ -311,6 +318,25 @@ class AddonEvents extends AddonBase {
 
   private getSplitHeight(): string {
     return Zotero.Prefs.get("pdfpreview.splitHeight");
+  }
+
+  private setSplitCollapsed(collapsed: boolean) {
+    const lastCollapsed = this.previewSplitCollapsed;
+    this.previewSplitCollapsed = collapsed;
+    if (lastCollapsed && !collapsed) {
+      this.doPreview();
+    }
+    const toCollapseIds = [
+      "pdf-preview-infosplit-splitter-before",
+      "pdf-preview-infosplit-splitter-after",
+      "pdf-preview-attachment-splitter-before",
+      "pdf-preview-attachment-splitter-after",
+    ];
+    toCollapseIds.forEach((_id) => {
+      document
+        .getElementById(_id)
+        .setAttribute("state", collapsed ? "collapsed" : "open");
+    });
   }
 }
 
