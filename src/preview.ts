@@ -1,4 +1,4 @@
-import { AddonBase } from "./base";
+import { AddonBase, PreviewType } from "./base";
 
 class Annotation {
   type: string;
@@ -24,8 +24,7 @@ class AddonPreview extends AddonBase {
     }
     let item: ZoteroItem;
     for (const _item of items) {
-      if (false && _item.isPDFAttachment()) {
-        // Disable for now. The PDF doesn't have a side bar
+      if (_item.isPDFAttachment()) {
         item = _item;
         break;
       } else if (_item.isRegularItem()) {
@@ -52,11 +51,13 @@ class AddonPreview extends AddonBase {
     return new Uint8Array(buf).buffer;
   }
 
-  public async preview(type: string = "preview", force: boolean = false) {
+  public async preview(type: PreviewType, force: boolean = false) {
     if (
       Zotero.Prefs.get("pdfpreview.enable") === false ||
       Zotero.Prefs.get(
-        `pdfpreview.${type === "preview" ? "enableTab" : "enableSplit"}`
+        `pdfpreview.${
+          type === PreviewType.preview ? "enableTab" : "enableSplit"
+        }`
       ) === false
     ) {
       return;
@@ -66,14 +67,26 @@ class AddonPreview extends AddonBase {
     if (force && !item) {
       item = this.item;
     }
+
+    let containerId = "";
+    let iframeId = "";
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
     );
-    if (type === "info") {
-      type = `${type}-${splitType}`;
+    if (type === PreviewType.info) {
+      iframeId = `pdf-preview-info-${splitType}-container`;
+      containerId = `pdf-preview-infosplit-${splitType}`;
+    } else if (type === PreviewType.preview) {
+      iframeId = `pdf-preview-preview-container`;
+      containerId = "pdf-preview-tabpanel";
+    } else if (type === PreviewType.attachment) {
+      iframeId = `pdf-preview-attachment-${splitType}-container`;
+      containerId = `pdf-preview-attachment-${splitType}`;
+    } else {
+      return;
     }
-    const previewId = `pdf-preview-${type}-container`;
-    let previewIframe = document.getElementById(previewId) as HTMLIFrameElement;
+
+    let previewIframe = document.getElementById(iframeId) as HTMLIFrameElement;
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;
@@ -82,17 +95,13 @@ class AddonPreview extends AddonBase {
         console.log("init preview iframe");
         this._initPromise = Zotero.Promise.defer();
         previewIframe = window.document.createElement("iframe");
-        previewIframe.setAttribute("id", previewId);
+        previewIframe.setAttribute("id", iframeId);
         previewIframe.setAttribute(
           "src",
           "chrome://PDFPreview/content/previewPDF.html"
         );
 
-        const container = document.querySelector(
-          type === "preview"
-            ? "#pdf-preview-tabpanel"
-            : `#pdf-preview-infosplit-${splitType}`
-        );
+        const container = document.getElementById(containerId);
         if (!container) {
           return;
         }

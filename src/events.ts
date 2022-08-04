@@ -1,4 +1,4 @@
-import { AddonBase } from "./base";
+import { AddonBase, PreviewType } from "./base";
 
 class AddonEvents extends AddonBase {
   private previewType: string;
@@ -10,68 +10,84 @@ class AddonEvents extends AddonBase {
     this.initPreviewResizeListener();
     this.initTabSelectListener();
     this.initPreviewInfoSplit();
+    this.initPreviewAttachmentSplit();
     this.updatePreviewInfoSplit();
+    this.updatePreviewAttachmentSplit();
     this.updatePreviewTab();
     this.updatePreviewTabName();
   }
 
   private initItemSelectListener() {
     ZoteroPane.itemsView.onSelect.addListener(() => {
-      this.updatePreviewTab();
-      if (this.isPreviewTabSelected()) {
-        this._Addon.preview.preview();
-      } else if (this.isInfoTabSelected()) {
-        this.updatePreviewInfoSplit();
-        this._Addon.preview.preview("info");
-      }
+      console.log("Preview triggered by selection change");
+      this.doPreview();
     });
   }
 
   private initPreviewResizeListener() {
-    const splitter = window.document.getElementById("zotero-items-splitter");
+    const splitter = document.getElementById("zotero-items-splitter");
     splitter.addEventListener("mouseup", (e) => {
-      if (this.isPreviewTabSelected()) {
-        this._Addon.preview.preview("preview", true);
-      } else if (this.isInfoTabSelected()) {
-        this._Addon.preview.preview("info", true);
-      }
+      console.log("Preview triggered by resize");
+      this.doPreview();
     });
   }
 
   private initTabSelectListener() {
-    const tabbox = window.document.querySelector("#zotero-view-tabbox");
+    const tabbox = document.querySelector("#zotero-view-tabbox");
     tabbox.addEventListener("command", (e) => {
-      if (this.isPreviewTabSelected()) {
-        this._Addon.preview.preview();
-      } else if (this.isInfoTabSelected()) {
-        this._Addon.preview.preview("info");
+      if (
+        !["zotero-editpane-info-tab", "pdf-preview-tab"].includes(
+          (e.target as Element).id
+        )
+      ) {
+        return;
       }
+      console.log("Preview triggered by tab change");
+      this.doPreview();
     });
   }
 
-  public isInfoTabSelected(): boolean {
-    const tabbox = window.document.querySelector("#zotero-view-tabbox");
-    const infoTab = window.document.querySelector("#zotero-editpane-info-tab");
-    const tabIndex = Array.prototype.indexOf.call(
-      infoTab.parentNode.childNodes,
-      infoTab
-    );
-    return (tabbox as any).selectedIndex === tabIndex;
+  private doPreview() {
+    this.updatePreviewTab();
+    const previewType = this.getPreviewType();
+    if (previewType === PreviewType.info) {
+      this.updatePreviewInfoSplit();
+    } else if (previewType === PreviewType.attachment) {
+      this.updatePreviewAttachmentSplit();
+    }
+    this._Addon.preview.preview(previewType);
   }
 
-  public isPreviewTabSelected(): boolean {
-    const tabbox = window.document.querySelector("#zotero-view-tabbox");
-    const previewTab = window.document.querySelector("#pdf-preview-tab");
-    const tabIndex = Array.prototype.indexOf.call(
-      previewTab.parentNode.childNodes,
-      previewTab
-    );
-    return (tabbox as any).selectedIndex === tabIndex;
+  public getPreviewType(): PreviewType {
+    const paneDeck: any = document.getElementById("zotero-item-pane-content");
+    const selectedPane = paneDeck.selectedPanel;
+    if (selectedPane.id === "zotero-view-tabbox") {
+      const tabbox: any = document.getElementById("zotero-view-tabbox");
+      const infoTab = document.getElementById("zotero-editpane-info-tab");
+      const infoIndex = Array.prototype.indexOf.call(
+        infoTab.parentNode.childNodes,
+        infoTab
+      );
+      if (tabbox.selectedIndex === infoIndex) {
+        return PreviewType.info;
+      }
+      const previewTab = document.getElementById("pdf-preview-tab");
+      const previewIndex = Array.prototype.indexOf.call(
+        previewTab.parentNode.childNodes,
+        previewTab
+      );
+      if (tabbox.selectedIndex === previewIndex) {
+        return PreviewType.preview;
+      }
+    } else if (selectedPane.querySelector("#zotero-attachment-box")) {
+      return PreviewType.attachment;
+    }
+    return PreviewType.null;
   }
 
   public updatePreviewTabSelection() {
-    const tabbox = window.document.querySelector("#zotero-view-tabbox");
-    const previewTab = window.document.querySelector("#pdf-preview-tab");
+    const tabbox = document.querySelector("#zotero-view-tabbox");
+    const previewTab = document.querySelector("#pdf-preview-tab");
     const tabIndex = Array.prototype.indexOf.call(
       previewTab.parentNode.childNodes,
       previewTab
@@ -83,7 +99,7 @@ class AddonEvents extends AddonBase {
     let label = "";
 
     label = Zotero.Prefs.get("pdfpreview.previewTabName");
-    const previewTab = window.document.querySelector("#pdf-preview-tab");
+    const previewTab = document.querySelector("#pdf-preview-tab");
     previewTab.setAttribute("label", label);
   }
 
@@ -99,7 +115,7 @@ class AddonEvents extends AddonBase {
     }
   }
 
-  public initPreviewInfoSplit(zitembox: Element = undefined) {
+  private initPreviewInfoSplit(zitembox: Element = undefined) {
     zitembox = zitembox || document.querySelector("#zotero-editpane-item-box");
     console.log(zitembox, zitembox.parentElement);
     zitembox.parentElement.setAttribute("orient", "vertical");
@@ -111,15 +127,40 @@ class AddonEvents extends AddonBase {
     zitembox.after(boxAfter);
     const splitterBefore = document.createElement("splitter") as XUL.Splitter;
     splitterBefore.id = "pdf-preview-infosplit-splitter-before";
-    splitterBefore.collapse = "before";
+    splitterBefore.setAttribute("collapse", "before");
+    const grippyBefore = document.createElement("grippy");
+    splitterBefore.append(grippyBefore);
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
     splitterAfter.id = "pdf-preview-infosplit-splitter-after";
-    splitterAfter.collapse = "after";
+    splitterAfter.setAttribute("collapse", "after");
+    const grippyAfter = document.createElement("grippy");
+    splitterAfter.append(grippyAfter);
     boxAfter.before(splitterAfter);
-    // window.addEventListener("resize", (e) => {
-    //   this.resizePreviewSplit(!Zotero.Prefs.get("pdfpreview.enableSplit"));
-    // });
+  }
+
+  private initPreviewAttachmentSplit(zitembox: Element = undefined) {
+    zitembox = zitembox || document.querySelector("#zotero-attachment-box");
+    console.log(zitembox, zitembox.parentElement);
+    zitembox.parentElement.setAttribute("orient", "vertical");
+    const boxBefore = document.createElement("box");
+    boxBefore.id = "pdf-preview-attachment-before";
+    const boxAfter = document.createElement("box");
+    boxAfter.id = "pdf-preview-attachment-after";
+    zitembox.before(boxBefore);
+    zitembox.after(boxAfter);
+    const splitterBefore = document.createElement("splitter") as XUL.Splitter;
+    splitterBefore.id = "pdf-preview-attachment-splitter-before";
+    splitterBefore.setAttribute("collapse", "before");
+    const grippyBefore = document.createElement("grippy");
+    splitterBefore.append(grippyBefore);
+    boxBefore.after(splitterBefore);
+    const splitterAfter = document.createElement("splitter") as XUL.Splitter;
+    splitterAfter.id = "pdf-preview-attachment-splitter-after";
+    splitterAfter.setAttribute("collapse", "after");
+    const grippyAfter = document.createElement("grippy");
+    splitterAfter.append(grippyAfter);
+    boxAfter.before(splitterAfter);
   }
 
   private updatePreviewInfoSplit() {
@@ -145,7 +186,7 @@ class AddonEvents extends AddonBase {
       this.initPreviewInfoSplit(BBTBox.parentElement);
       // Swith selected tab to trigger some re-render of splitter
       // Otherwise the splitters are unvisible
-      const tabbox: any = window.document.querySelector("#zotero-view-tabbox");
+      const tabbox: any = document.querySelector("#zotero-view-tabbox");
       const tabIndex = tabbox.selectedIndex;
       tabbox.selectedIndex =
         tabIndex === tabbox.childNodes.length - 1 ? 1 : tabIndex + 1;
@@ -182,6 +223,41 @@ class AddonEvents extends AddonBase {
     );
     const hiddenSplitter: HTMLDivElement = document.querySelector(
       `#pdf-preview-infosplit-splitter-${hiddenType}`
+    );
+    hiddenContainer.setAttribute("height", "0");
+    hiddenContainer.style.visibility = "hidden";
+    hiddenSplitter.style.visibility = "hidden";
+  }
+
+  private updatePreviewAttachmentSplit() {
+    const hidden = !Zotero.Prefs.get("pdfpreview.enableSplit");
+    const splitType: "before" | "after" = Zotero.Prefs.get(
+      "pdfpreview.splitType"
+    );
+    const splitContainer: HTMLDivElement = document.querySelector(
+      `#pdf-preview-attachment-${splitType}`
+    );
+    const splitSplitter: HTMLDivElement = document.querySelector(
+      `#pdf-preview-attachment-splitter-${splitType}`
+    );
+    if (hidden) {
+      splitContainer.setAttribute("height", "0");
+      splitContainer.style.visibility = "hidden";
+      splitSplitter.style.visibility = "hidden";
+    } else {
+      splitContainer.setAttribute("height", "400");
+      splitContainer.style.removeProperty("visibility");
+      splitSplitter.style.removeProperty("visibility");
+    }
+
+    // Hide another preview
+    const hiddenType: "before" | "after" =
+      splitType === "before" ? "after" : "before";
+    const hiddenContainer: HTMLDivElement = document.querySelector(
+      `#pdf-preview-attachment-${hiddenType}`
+    );
+    const hiddenSplitter: HTMLDivElement = document.querySelector(
+      `#pdf-preview-attachment-splitter-${hiddenType}`
     );
     hiddenContainer.setAttribute("height", "0");
     hiddenContainer.style.visibility = "hidden";
