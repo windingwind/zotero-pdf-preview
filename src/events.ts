@@ -1,9 +1,9 @@
 import { AddonBase, PreviewType } from "./base";
 
 class AddonEvents extends AddonBase {
-  private previewType: string;
+  private previewMode: string;
   public async onInit() {
-    this.previewType = "normal";
+    this.previewMode = "normal";
     Zotero.debug("PDFPreview: init called");
     await Zotero.uiReadyPromise;
     this.initItemSelectListener();
@@ -130,12 +130,26 @@ class AddonEvents extends AddonBase {
     splitterBefore.setAttribute("collapse", "before");
     const grippyBefore = document.createElement("grippy");
     splitterBefore.append(grippyBefore);
+    splitterBefore.addEventListener("command", (e) => {
+      this.setSplitHeight(
+        document
+          .querySelector("#pdf-preview-infosplit-before")
+          .getAttribute("height")
+      );
+    });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
     splitterAfter.id = "pdf-preview-infosplit-splitter-after";
     splitterAfter.setAttribute("collapse", "after");
     const grippyAfter = document.createElement("grippy");
     splitterAfter.append(grippyAfter);
+    splitterAfter.addEventListener("command", (e) => {
+      this.setSplitHeight(
+        document
+          .querySelector("#pdf-preview-infosplit-after")
+          .getAttribute("height")
+      );
+    });
     boxAfter.before(splitterAfter);
   }
 
@@ -154,12 +168,26 @@ class AddonEvents extends AddonBase {
     splitterBefore.setAttribute("collapse", "before");
     const grippyBefore = document.createElement("grippy");
     splitterBefore.append(grippyBefore);
+    splitterBefore.addEventListener("command", (e) => {
+      this.setSplitHeight(
+        document
+          .querySelector("#pdf-preview-attachment-before")
+          .getAttribute("height")
+      );
+    });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
     splitterAfter.id = "pdf-preview-attachment-splitter-after";
     splitterAfter.setAttribute("collapse", "after");
     const grippyAfter = document.createElement("grippy");
     splitterAfter.append(grippyAfter);
+    splitterAfter.addEventListener("command", (e) => {
+      this.setSplitHeight(
+        document
+          .querySelector("#pdf-preview-attachment-after")
+          .getAttribute("height")
+      );
+    });
     boxAfter.before(splitterAfter);
   }
 
@@ -168,8 +196,8 @@ class AddonEvents extends AddonBase {
     const BBTBox = document
       .getElementById("zotero-editpane-item-box")
       .parentElement.querySelector("#better-bibtex-editpane-item-box");
-    if (BBTBox && this.previewType !== "BBT") {
-      this.previewType = "BBT";
+    if (BBTBox && this.previewMode !== "BBT") {
+      this.previewMode = "BBT";
       const toRemove = [
         "pdf-preview-infosplit-before",
         "pdf-preview-infosplit-after",
@@ -210,7 +238,7 @@ class AddonEvents extends AddonBase {
       splitContainer.style.visibility = "hidden";
       splitSplitter.style.visibility = "hidden";
     } else {
-      splitContainer.setAttribute("height", "400");
+      splitContainer.setAttribute("height", this.getSplitHeight());
       splitContainer.style.removeProperty("visibility");
       splitSplitter.style.removeProperty("visibility");
     }
@@ -245,7 +273,7 @@ class AddonEvents extends AddonBase {
       splitContainer.style.visibility = "hidden";
       splitSplitter.style.visibility = "hidden";
     } else {
-      splitContainer.setAttribute("height", "400");
+      splitContainer.setAttribute("height", this.getSplitHeight());
       splitContainer.style.removeProperty("visibility");
       splitSplitter.style.removeProperty("visibility");
     }
@@ -262,6 +290,14 @@ class AddonEvents extends AddonBase {
     hiddenContainer.setAttribute("height", "0");
     hiddenContainer.style.visibility = "hidden";
     hiddenSplitter.style.visibility = "hidden";
+  }
+
+  private setSplitHeight(height: string) {
+    Zotero.Prefs.set("pdfpreview.splitHeight", height);
+  }
+
+  private getSplitHeight(): string {
+    return Zotero.Prefs.get("pdfpreview.splitHeight");
   }
 }
 

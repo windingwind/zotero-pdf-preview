@@ -1,6 +1,7 @@
 pref("extensions.zotero.pdfpreview.enable", true);
 pref("extensions.zotero.pdfpreview.enableSplit", true);
 pref("extensions.zotero.pdfpreview.splitType", "after");
+pref("extensions.zotero.pdfpreview.splitHeight", "400");
 pref("extensions.zotero.pdfpreview.enableTab", true);
 pref("extensions.zotero.pdfpreview.autoPreview", false);
 pref("extensions.zotero.pdfpreview.showAnnotations", true);
