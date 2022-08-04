@@ -14,10 +14,11 @@ class Annotation {
 }
 class AddonPreview extends AddonBase {
   item: ZoteroItem;
+  lastType: PreviewType;
   _initPromise: any;
   _loadingPromise: any;
 
-  public updatePreviewItem() {
+  public updatePreviewItem(alwaysUpdate: boolean = false) {
     let items = ZoteroPane.getSelectedItems();
     if (!items.length) {
       return false;
@@ -38,6 +39,10 @@ class AddonPreview extends AddonBase {
       }
     }
     if (!item) {
+      return false;
+    }
+    if (!alwaysUpdate && this.item && item.id === this.item.id) {
+      console.log("Preview skipped for same item");
       return false;
     }
     this.item = item;
@@ -62,7 +67,7 @@ class AddonPreview extends AddonBase {
     ) {
       return;
     }
-    let item = this.updatePreviewItem();
+    let item = this.updatePreviewItem(type !== this.lastType);
     console.log(item);
     if (force && !item) {
       item = this.item;
@@ -119,6 +124,7 @@ class AddonPreview extends AddonBase {
         return;
       }
       console.log("do preview");
+      this.lastType = type;
       previewIframe.contentWindow.postMessage(
         {
           type: "renderPreview",
