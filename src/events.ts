@@ -2,8 +2,10 @@ import { AddonBase, PreviewType } from "./base";
 
 class AddonEvents extends AddonBase {
   private previewMode: string;
+  private previewSplitCollapsed: boolean;
   public async onInit() {
     this.previewMode = "normal";
+    this.previewSplitCollapsed = false;
     Zotero.debug("PDFPreview: init called");
     await Zotero.uiReadyPromise;
     this.initItemSelectListener();
@@ -68,7 +70,7 @@ class AddonEvents extends AddonBase {
         infoTab.parentNode.childNodes,
         infoTab
       );
-      if (tabbox.selectedIndex === infoIndex) {
+      if (tabbox.selectedIndex === infoIndex && !this.previewSplitCollapsed) {
         return PreviewType.info;
       }
       const previewTab = document.getElementById("pdf-preview-tab");
@@ -79,7 +81,10 @@ class AddonEvents extends AddonBase {
       if (tabbox.selectedIndex === previewIndex) {
         return PreviewType.preview;
       }
-    } else if (selectedPane.querySelector("#zotero-attachment-box")) {
+    } else if (
+      selectedPane.querySelector("#zotero-attachment-box") &&
+      !this.previewSplitCollapsed
+    ) {
       return PreviewType.attachment;
     }
     return PreviewType.null;
@@ -136,6 +141,8 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-infosplit-before")
           .getAttribute("height")
       );
+      this.previewSplitCollapsed =
+        splitterBefore.getAttribute("state") === "collapsed";
     });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
@@ -149,6 +156,8 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-infosplit-after")
           .getAttribute("height")
       );
+      this.previewSplitCollapsed =
+        splitterAfter.getAttribute("state") === "collapsed";
     });
     boxAfter.before(splitterAfter);
   }
@@ -174,6 +183,8 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-attachment-before")
           .getAttribute("height")
       );
+      this.previewSplitCollapsed =
+        splitterBefore.getAttribute("state") === "collapsed";
     });
     boxBefore.after(splitterBefore);
     const splitterAfter = document.createElement("splitter") as XUL.Splitter;
@@ -187,6 +198,8 @@ class AddonEvents extends AddonBase {
           .querySelector("#pdf-preview-attachment-after")
           .getAttribute("height")
       );
+      this.previewSplitCollapsed =
+        splitterAfter.getAttribute("state") === "collapsed";
     });
     boxAfter.before(splitterAfter);
   }
