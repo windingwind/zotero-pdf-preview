@@ -17,6 +17,7 @@ class AddonPreview extends AddonBase {
   lastType: PreviewType;
   _initPromise: any;
   _loadingPromise: any;
+  _skipRendering: boolean;
 
   public updatePreviewItem(alwaysUpdate: boolean = false) {
     let items = ZoteroPane.getSelectedItems();
@@ -43,7 +44,9 @@ class AddonPreview extends AddonBase {
     }
     if (!alwaysUpdate && this.item && item.id === this.item.id) {
       console.log("Preview skipped for same item");
-      return false;
+      this._skipRendering = true;
+    } else {
+      this._skipRendering = false;
     }
     this.item = item;
     return this.item;
@@ -121,6 +124,11 @@ class AddonPreview extends AddonBase {
       await this._initPromise.promise;
 
       if ((item as unknown as ZoteroItem).id !== this.item.id) {
+        // New preview triggered. Stop current one.
+        return;
+      }
+      if (this._skipRendering) {
+        previewIframe.hidden = false;
         return;
       }
       console.log("do preview");
