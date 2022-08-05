@@ -21,26 +21,27 @@ class AddonPreview extends AddonBase {
 
   public updatePreviewItem(alwaysUpdate: boolean = false) {
     let items = ZoteroPane.getSelectedItems();
-    if (!items.length) {
+    if (items.length !== 1) {
       return false;
     }
     let item: ZoteroItem;
-    for (const _item of items) {
-      if (_item.isPDFAttachment()) {
-        item = _item;
-        break;
-      } else if (_item.isRegularItem()) {
-        const attachment = (
-          Zotero.Items.get(_item.getAttachments()) as ZoteroItem[]
-        ).find((att) => att.isPDFAttachment());
-        if (attachment) {
-          item = attachment;
-          break;
-        }
+    if (items[0].isPDFAttachment()) {
+      item = items[0];
+    } else if (items[0].isRegularItem()) {
+      const attachment = (
+        Zotero.Items.get(items[0].getAttachments()) as ZoteroItem[]
+      ).find((att) => att.isPDFAttachment());
+      if (attachment) {
+        item = attachment;
       }
     }
     if (!item) {
+      this._Addon.events.setSplitCollapsed(true, true);
       return false;
+    } else {
+      if (!this._Addon.events.previewSplitCollapsed) {
+        this._Addon.events.setSplitCollapsed(false, true);
+      }
     }
     if (!alwaysUpdate && this.item && item.id === this.item.id) {
       console.log("Preview skipped for same item");

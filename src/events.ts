@@ -2,7 +2,7 @@ import { AddonBase, PreviewType } from "./base";
 
 class AddonEvents extends AddonBase {
   private previewMode: string;
-  private previewSplitCollapsed: boolean;
+  public previewSplitCollapsed: boolean;
   public async onInit() {
     this.previewMode = "normal";
     this.previewSplitCollapsed = false;
@@ -310,11 +310,13 @@ class AddonEvents extends AddonBase {
     return Zotero.Prefs.get("pdfpreview.splitHeight");
   }
 
-  private setSplitCollapsed(collapsed: boolean) {
-    const lastCollapsed = this.previewSplitCollapsed;
-    this.previewSplitCollapsed = collapsed;
-    if (lastCollapsed && !collapsed) {
-      this.doPreview();
+  public setSplitCollapsed(collapsed: boolean, quietly: boolean = false) {
+    if (!quietly) {
+      const lastCollapsed = this.previewSplitCollapsed;
+      this.previewSplitCollapsed = collapsed;
+      if (lastCollapsed && !collapsed) {
+        this.doPreview();
+      }
     }
     const toCollapseIds = [
       "pdf-preview-infosplit-splitter-before",
