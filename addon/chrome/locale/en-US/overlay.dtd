@@ -1,7 +1,6 @@
 <!ENTITY zotero.__addonRef__.pref.label "Preview">
 <!ENTITY zotero.__addonRef__.pref.enable.label "Enable Preview">
 <!ENTITY zotero.__addonRef__.pref.enableSplit.label "Preview in Info Tab">
-<!ENTITY zotero.__addonRef__.pref.splitPosition.label "Preview Position:">
 <!ENTITY zotero.__addonRef__.pref.splitBefore.label "Top">
 <!ENTITY zotero.__addonRef__.pref.splitAfter.label "Bottom">
 <!ENTITY zotero.__addonRef__.pref.enableTab.label "Preview in 'Preview' Tab">

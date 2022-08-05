@@ -22,8 +22,7 @@
           <checkbox id="zotero-prefpane-__addonRef__-settings-enable" preference="pref-__addonRef__-enable" label="&zotero.__addonRef__.pref.enable.label;" />
         </row>
         <row>
-          <checkbox id="zotero-prefpane-__addonRef__-settings-enableSplit" preference="pref-__addonRef__-enableSplit" label="&zotero.__addonRef__.pref.enableSplit.label;" />
-          <label value="&zotero.__addonRef__.pref.splitPosition.label;" />
+          <checkbox id="zotero-prefpane-__addonRef__-settings-enableSplit" preference="pref-__addonRef__-enableSplit" label="&zotero.__addonRef__.pref.enableSplit.label;:" />
           <radiogroup preference="pref-__addonRef__-splitType" orient="horizontal">
             <radio label="&zotero.__addonRef__.pref.splitBefore.label;" value="before"></radio>
             <radio label="&zotero.__addonRef__.pref.splitAfter.label;" value="after"></radio>

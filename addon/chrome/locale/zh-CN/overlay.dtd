@@ -1,7 +1,6 @@
 <!ENTITY zotero.__addonRef__.pref.label "预览">
 <!ENTITY zotero.__addonRef__.pref.enable.label "启用预览">
 <!ENTITY zotero.__addonRef__.pref.enableSplit.label "在信息面板中预览">
-<!ENTITY zotero.__addonRef__.pref.splitPosition.label "预览位置：">
 <!ENTITY zotero.__addonRef__.pref.splitBefore.label "顶部">
 <!ENTITY zotero.__addonRef__.pref.splitAfter.label "底部">
 <!ENTITY zotero.__addonRef__.pref.enableTab.label "在独立预览面板中预览">
