@@ -155,9 +155,6 @@ class AddonPreview extends AddonBase {
         },
         "*"
       );
-      if (Zotero.Prefs.get("pdfpreview.autoPreview")) {
-        this._Addon.events.updatePreviewTabSelection();
-      }
       previewIframe.hidden = false;
     } else {
       console.log("hide preview");

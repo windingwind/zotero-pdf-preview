@@ -93,16 +93,6 @@ class AddonEvents extends AddonBase {
     return PreviewType.null;
   }
 
-  public updatePreviewTabSelection() {
-    const tabbox = document.querySelector("#zotero-view-tabbox");
-    const previewTab = document.querySelector("#pdf-preview-tab");
-    const tabIndex = Array.prototype.indexOf.call(
-      previewTab.parentNode.childNodes,
-      previewTab
-    );
-    (tabbox as any).selectedIndex = tabIndex;
-  }
-
   private updatePreviewTabName() {
     let label = "";
 

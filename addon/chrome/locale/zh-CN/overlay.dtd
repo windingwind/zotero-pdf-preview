@@ -5,7 +5,6 @@
 <!ENTITY zotero.__addonRef__.pref.splitBefore.label "顶部">
 <!ENTITY zotero.__addonRef__.pref.splitAfter.label "底部">
 <!ENTITY zotero.__addonRef__.pref.enableTab.label "在独立预览面板中预览">
-<!ENTITY zotero.__addonRef__.pref.autoPreview.label "自动选中预览">
 <!ENTITY zotero.__addonRef__.pref.showAnnotations.label "显示注释">
 <!ENTITY zotero.__addonRef__.pref.showHover.label "显示悬停页面样式">
 <!ENTITY zotero.__addonRef__.pref.enableJump.label "双击预览页面以打开/转跳PDF">
