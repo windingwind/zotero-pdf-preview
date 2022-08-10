@@ -33,7 +33,7 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Show Hovered Page Style                    | Enable extra style of the hovered page: box shadow and hand cursor.                                                  | `true`        |
 | Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF.                                                        | `true`        |
 | Dark Mode                                  | Enable to preview PDF files in dark mode. This is a naive dark mode and images color may not be displayed correctly. | `false`       |
-| Preview First _N_ Pages                    | See [below](#preview-page-index)                                                                                     | `10`          |
+| Preview First _N_ Pages                    | See [below](#advanced-usage-of-preview-page-index)                                                                                     | `10`          |
 | Preview Tab Name                           | Set the tab label.                                                                                                   | `preview`     |
 
 ### Advanced Usage of Preview Page Index
