@@ -188,12 +188,67 @@
         try {
           viewer = document.getElementById("pdf-viewer");
           viewer.innerHTML = "";
-          const maxPageNum = Number(
-            Zotero.Prefs.get("pdfpreview.previewPageNum")
-          );
-          let lastNumber =
-            pdf.numPages > maxPageNum ? maxPageNum : pdf.numPages;
-          for (i = 1; i <= lastNumber; i++) {
+          let pages = [];
+          const pageNumber = Zotero.Prefs.get("pdfpreview.previewPageNum");
+          const totalNumber = pdf.numPages;
+          if (pageNumber.includes(",") || pageNumber.includes(":")) {
+            pageNumber.split(",").forEach((s) => {
+              if (s.includes(":")) {
+                let start = Number(s.split(":")[0]);
+                let end = Number(s.split(":")[1]);
+                if (!start) {
+                  start = 1;
+                }
+                if (!end) {
+                  end = totalNumber + 1;
+                }
+                if (start < 0) {
+                  start = totalNumber + start + 1;
+                }
+                if (end < 0) {
+                  end = totalNumber + end + 1;
+                }
+                if (start > totalNumber) {
+                  start = totalNumber;
+                }
+                if (end > totalNumber) {
+                  end = totalNumber + 1;
+                }
+                pages = pages.concat([...Array(end).keys()].slice(start));
+              } else {
+                let page = Number(s);
+                if (page) {
+                  if (page < 0) {
+                    page = totalNumber + page + 1;
+                  }
+                  if (page > totalNumber) {
+                    page = totalNumber;
+                  }
+                  pages.push();
+                }
+              }
+            });
+            // Remove out of bound
+            pages = pages.filter((i) => i >= 1 && i <= totalNumber);
+            // Remove duplicate
+            pages = [...new Set(pages)];
+            // Sort
+            pages.sort((a, b) => a - b);
+          } else {
+            let page = Number(pageNumber);
+            if (!page) {
+              page = 10;
+            }
+            if (page < 0) {
+              page = totalNumber + page + 1;
+            }
+            if (page > totalNumber) {
+              page = totalNumber;
+            }
+            pages = [...Array(page).keys()].slice(1);
+          }
+
+          for (i of pages) {
             if (id !== itemID) {
               // Stop current render if there is a new item
               console.log(id, itemID, "Eraly stop rendering");

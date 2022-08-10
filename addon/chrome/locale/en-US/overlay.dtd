@@ -9,7 +9,7 @@
 <!ENTITY zotero.__addonRef__.pref.enableJump.label "Double-click Preview Page to Open/Jump PDF">
 <!ENTITY zotero.__addonRef__.pref.darkMode.label "Dark Mode">
 <!ENTITY zotero.__addonRef__.pref.previewPageNumBefore.label "Preview First">
-<!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages">
+<!ENTITY zotero.__addonRef__.pref.previewPageNumAfter.label "Pages(See GitHub for advance usage)">
 <!ENTITY zotero.__addonRef__.pref.previewTabNameBefore.label "Preview Tab Name">
 <!ENTITY zotero.__addonRef__.pref.previewTabNameAfter.label "(Restart Zotero to Apply Changes)">
 

@@ -2,7 +2,7 @@
 
 ![teaser](./image/README/teaser.gif)
 
-Preview PDF attachments in the library view.  
+Preview PDF attachments in the library view.
 
 Fast & easy. Do not require any third-party softwares.
 
@@ -22,19 +22,81 @@ Fast & easy. Do not require any third-party softwares.
 
 Find settings here: Menubar -> Edit -> Preferences -> Preview
 
-| Setting | Details | Default Value |
-| ---- | ---- | ---- |
-| Enable Preview | Enable to allow the preview behavior. | `true` |
-| Preview in Info Tab | Enable to show the preview in a split view under 'info' tab. | `true` |
-| Preview Position | Preview position in the Info Tab | `bottom` |
-| Preview in 'Preview' Tab | Enable show the preview in a new tab of right sidebar. | `true` |
-| Auto Focus Preview Tab | Enable to focus the preview tab automatically when you select a valid preview item. | `false` |
-| Show Annotations | Enable to show annotations of the PDF files. May slow down the preview speed. | `false` |
-| Show Hovered Page Style | Enable extra style of the hovered page: box shadow and hand cursor. | `true` |
-| Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF. | `true` |
-| Dark Mode | Enable to preview PDF files in dark mode. This is a naive dark mode and images color may not be displayed correctly. | `false` |
-| Preview First _N_ Pages | Set how many pages you want to appear in preview. More pages will make the preview slower. Set to `1` for the cover view. | `10` |
-| Preview Tab Name | Set the tab label. | `preview` |
+| Setting                                    | Details                                                                                                              | Default Value |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ------------- |
+| Enable Preview                             | Enable to allow the preview behavior.                                                                                | `true`        |
+| Preview in Info Tab                        | Enable to show the preview in a split view under 'info' tab.                                                         | `true`        |
+| Preview Position                           | Preview position in the Info Tab                                                                                     | `bottom`      |
+| Preview in 'Preview' Tab                   | Enable show the preview in a new tab of right sidebar.                                                               | `true`        |
+| Auto Focus Preview Tab                     | Enable to focus the preview tab automatically when you select a valid preview item.                                  | `false`       |
+| Show Annotations                           | Enable to show annotations of the PDF files. May slow down the preview speed.                                        | `false`       |
+| Show Hovered Page Style                    | Enable extra style of the hovered page: box shadow and hand cursor.                                                  | `true`        |
+| Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF.                                                        | `true`        |
+| Dark Mode                                  | Enable to preview PDF files in dark mode. This is a naive dark mode and images color may not be displayed correctly. | `false`       |
+| Preview First _N_ Pages                    | See [below](#preview-page-index)                                                                                     | `10`          |
+| Preview Tab Name                           | Set the tab label.                                                                                                   | `preview`     |
+
+### Advanced Usage of Preview Page Index
+
+A python-style slice command is supported.
+
+Syntax: `command1,command2,...`  
+Supported Commands:
+
+- Number  
+  Number from 1 to last page
+
+  > Example:  
+  > `1`  
+  > preview page 1
+
+  ***
+
+  > Example:  
+  > `10`  
+  > preview page 10
+
+- Slice  
+  `startIndex:stopIndex`.  
+  The `startIndex` page is included while the `stopIndex` page is excluded.
+
+  `startIndex` or `stopIndex` may be a negative number, which means it counts from the end of the file instead of the beginning.
+
+  The `startIndex` or `stopIndex` may be missing to indicate that starts from the first page or ends at the last page.
+
+  > Example:  
+  > `1:11`  
+  > preview page 1-10
+
+  ***
+
+  > Example:  
+  > `:11`  
+  > preview page first page(1)-10
+
+  ***
+
+  > Example:  
+  > `10:`  
+  > preview page 10-last page
+
+  ***
+
+  > Example:  
+  > `-3:`  
+  > preview last 3 pages
+
+  ***
+
+  > Example:  
+  > `:-3`  
+  > preview page first page(1)-last 3rd page(excluded)
+
+  ***
+
+  > Example:  
+  > `:`  
+  > preview every page
 
 ## Development & Contributing
 

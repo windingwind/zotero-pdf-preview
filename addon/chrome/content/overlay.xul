@@ -17,6 +17,14 @@
 <overlay id="__addonRef__" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script src="chrome://__addonRef__/content/scripts/index.js" />
 
+    <keyset id="mainKeyset">
+        <key id="key_pdf_preview" key="P" command="cmd_pdf_preview" />
+    </keyset>
+
+    <commandset id="mainCommandSet">
+        <command id="cmd_pdf_preview" oncommand="Zotero.PDFPreview.events.setSplitCollapsed();" />
+    </commandset>
+
     <tabbox id="zotero-view-tabbox">
         <tabs id="zotero-editpane-tabs">
             <tab id="pdf-preview-tab" label="&zotero.__addonRef__.tab.label;"></tab>

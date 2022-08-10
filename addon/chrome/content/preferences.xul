@@ -53,6 +53,13 @@
           <textbox id="zotero-prefpane-__addonRef__-settings-previewTabName" preference="pref-__addonRef__-previewTabName" />
           <label value="&zotero.__addonRef__.pref.previewTabNameAfter.label;" />
         </row>
+        <row>
+          <label value="&zotero.__addonRef__.help.feedback.label;" class="zotero-text-link" href="__homepage__" />
+        </row>
+        <row>
+          <label value="&zotero.__addonRef__.help.version.label;" />
+          <label value="&zotero.__addonRef__.help.releasetime.label;" />
+        </row>
       </rows>
     </prefpane>
   </prefwindow>

@@ -310,7 +310,13 @@ class AddonEvents extends AddonBase {
     return Zotero.Prefs.get("pdfpreview.splitHeight");
   }
 
-  public setSplitCollapsed(collapsed: boolean, quietly: boolean = false) {
+  public setSplitCollapsed(
+    collapsed: boolean = undefined,
+    quietly: boolean = false
+  ) {
+    if (typeof collapsed === "undefined") {
+      collapsed = !this.previewSplitCollapsed;
+    }
     if (!quietly) {
       const lastCollapsed = this.previewSplitCollapsed;
       this.previewSplitCollapsed = collapsed;
