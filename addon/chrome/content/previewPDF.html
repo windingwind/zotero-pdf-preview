@@ -240,11 +240,12 @@
               page = 10;
             }
             if (page < 0) {
-              page = totalNumber + page + 1;
+              page = totalNumber + page;
             }
             if (page > totalNumber) {
               page = totalNumber;
             }
+            page += 1;
             pages = [...Array(page).keys()].slice(1);
           }
 
