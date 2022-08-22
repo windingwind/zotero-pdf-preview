@@ -24,18 +24,11 @@ class AddonPreview extends AddonBase {
     if (items.length !== 1) {
       return false;
     }
-    let item: ZoteroItem;
-    if (items[0].isPDFAttachment()) {
-      item = items[0];
-    } else if (items[0].isRegularItem()) {
-      const attachment = (
-        Zotero.Items.get(items[0].getAttachments()) as ZoteroItem[]
-      ).find((att) => att.isPDFAttachment());
-      if (attachment) {
-        item = attachment;
-      }
-    }
-    if (!item) {
+    let item: ZoteroItem = items[0];
+    if (item.isRegularItem())
+      item = await items[0].getBestAttachment();
+    
+    if (!item.isPDFAttachment()) {
       this._Addon.events.setSplitCollapsed(true, true);
       return false;
     } else {
