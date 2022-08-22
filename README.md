@@ -100,7 +100,7 @@ Supported Commands:
 
 ## Development & Contributing
 
-This add-on is built on the Zotero Addon Template of [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate).
+This add-on is built on the [zotero-addon-template](https://github.com/windingwind/zotero-addon-template).
 
 ### Build
 
