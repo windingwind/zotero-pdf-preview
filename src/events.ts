@@ -1,6 +1,7 @@
-import { AddonBase, PreviewType } from "./base";
+import { PreviewType } from "./base";
+import AddonModule from "./module";
 
-class AddonEvents extends AddonBase {
+class AddonEvents extends AddonModule {
   private previewMode: string;
   public previewSplitCollapsed: boolean;
   public async onInit() {
@@ -96,7 +97,7 @@ class AddonEvents extends AddonBase {
   private updatePreviewTabName() {
     let label = "";
 
-    label = Zotero.Prefs.get("pdfpreview.previewTabName");
+    label = Zotero.Prefs.get("pdfpreview.previewTabName") as string;
     const previewTab = document.querySelector("#pdf-preview-tab");
     previewTab.setAttribute("label", label);
   }
@@ -236,7 +237,7 @@ class AddonEvents extends AddonBase {
     const hidden = !Zotero.Prefs.get("pdfpreview.enableSplit");
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
-    );
+    ) as "before" | "after";
     const splitContainer: HTMLDivElement = document.querySelector(
       `#pdf-preview-infosplit-${splitType}`
     );
@@ -271,7 +272,7 @@ class AddonEvents extends AddonBase {
     const hidden = !Zotero.Prefs.get("pdfpreview.enableSplit");
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
-    );
+    ) as "before" | "after";
     const splitContainer: HTMLDivElement = document.querySelector(
       `#pdf-preview-attachment-${splitType}`
     );
@@ -307,7 +308,7 @@ class AddonEvents extends AddonBase {
   }
 
   private getSplitHeight(): string {
-    return Zotero.Prefs.get("pdfpreview.splitHeight");
+    return Zotero.Prefs.get("pdfpreview.splitHeight") as string;
   }
 
   public setSplitCollapsed(

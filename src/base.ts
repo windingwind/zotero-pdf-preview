@@ -1,10 +1,3 @@
-class AddonBase {
-  protected _Addon: PDFPreview;
-  constructor(parent: PDFPreview) {
-    this._Addon = parent;
-  }
-}
-
 enum PreviewType {
   info = 1,
   preview,
@@ -12,4 +5,4 @@ enum PreviewType {
   null,
 }
 
-export { AddonBase, PreviewType };
+export { PreviewType };

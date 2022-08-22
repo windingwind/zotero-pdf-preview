@@ -1,4 +1,5 @@
-import { AddonBase, PreviewType } from "./base";
+import { PreviewType } from "./base";
+import AddonModule from "./module";
 
 class Annotation {
   type: string;
@@ -12,23 +13,24 @@ class Annotation {
     this.pageLabel = pageLabel;
   }
 }
-class AddonPreview extends AddonBase {
-  item: ZoteroItem;
+class AddonPreview extends AddonModule {
+  item: _ZoteroItem;
   lastType: PreviewType;
   _initPromise: any;
   _loadingPromise: any;
   _skipRendering: boolean;
 
-  public updatePreviewItem(alwaysUpdate: boolean = false) {
+  public async updatePreviewItem(alwaysUpdate: boolean = false) {
     let items = ZoteroPane.getSelectedItems();
     if (items.length !== 1) {
       return false;
     }
-    let item: ZoteroItem = items[0];
-    if (item.isRegularItem())
+    let item: _ZoteroItem = items[0];
+    if (item.isRegularItem()) {
       item = await items[0].getBestAttachment();
-    
-    if (!item.isPDFAttachment()) {
+    }
+    console.log(items, item);
+    if (!item || !item.isPDFAttachment()) {
       this._Addon.events.setSplitCollapsed(true, true);
       return false;
     } else {
@@ -64,7 +66,7 @@ class AddonPreview extends AddonBase {
     ) {
       return;
     }
-    let item = this.updatePreviewItem(type !== this.lastType);
+    let item = await this.updatePreviewItem(type !== this.lastType);
     console.log(item);
     if (force && !item) {
       item = this.item;
@@ -74,7 +76,7 @@ class AddonPreview extends AddonBase {
     let iframeId = "";
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
-    );
+    ) as "before" | "after";
     if (type === PreviewType.info) {
       iframeId = `pdf-preview-info-${splitType}-container`;
       containerId = `pdf-preview-infosplit-${splitType}`;
@@ -117,7 +119,7 @@ class AddonPreview extends AddonBase {
       previewIframe.style.width = `${width}px`;
       await this._initPromise.promise;
 
-      if ((item as unknown as ZoteroItem).id !== this.item.id) {
+      if ((item as unknown as _ZoteroItem).id !== this.item.id) {
         // New preview triggered. Stop current one.
         return;
       }
