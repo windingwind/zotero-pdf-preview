@@ -85,13 +85,13 @@ declare interface _ZoteroItem extends _ZoteroDataObject {
   annotationPageLabel: string;
 }
 
-declare interface __ZoteroItemConstructable {
+declare interface _ZoteroItemConstructable {
   new (itemTypeOrID?: string): _ZoteroItem;
 }
 
 // chrome/content/zotero/xpcom/data/items.js
 
-declare class __ZoteroItems {
+declare class _ZoteroItems {
   [attr: string]: any;
   get: (
     ids: number | number[] | string | string[]

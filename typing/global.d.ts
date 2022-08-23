@@ -111,8 +111,8 @@ declare const Zotero: {
     unregisterObserver: (id: String) => void;
   };
   DataObject: _ZoteroDataObjectConstructable;
-  Item: __ZoteroItemConstructable;
-  Items: __ZoteroItems;
+  Item: _ZoteroItemConstructable;
+  Items: _ZoteroItems;
   Collection: _ZoteroCollectionConstructable;
   Collections: _ZoteroCollection;
   Library: _ZoteroLibraryConstructable;
