@@ -70,19 +70,11 @@ class AddonEvents extends AddonModule {
     if (selectedPane.id === "zotero-view-tabbox") {
       const tabbox: any = document.getElementById("zotero-view-tabbox");
       const infoTab = document.getElementById("zotero-editpane-info-tab");
-      const infoIndex = Array.prototype.indexOf.call(
-        infoTab.parentNode.childNodes,
-        infoTab
-      );
-      if (tabbox.selectedIndex === infoIndex && !this.previewSplitCollapsed) {
+      if (tabbox.selectedTab === infoTab && !this.previewSplitCollapsed) {
         return PreviewType.info;
       }
       const previewTab = document.getElementById("pdf-preview-tab");
-      const previewIndex = Array.prototype.indexOf.call(
-        previewTab.parentNode.childNodes,
-        previewTab
-      );
-      if (tabbox.selectedIndex === previewIndex) {
+      if (tabbox.selectedTab === previewTab) {
         return PreviewType.preview;
       }
     } else if (
