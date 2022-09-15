@@ -66,7 +66,7 @@ class AddonPreview extends AddonModule {
     ) {
       return;
     }
-    let item = await this.updatePreviewItem(type !== this.lastType);
+    let item = await this.updatePreviewItem(type !== this.lastType || force);
     console.log(item);
     if (force && !item) {
       item = this.item;
@@ -112,6 +112,8 @@ class AddonPreview extends AddonModule {
         container.appendChild(previewIframe);
       }
       previewIframe.hidden = false;
+      // Reset the width to allow parentElement to shrink
+      previewIframe.style.width = "100px";
       const width = previewIframe.parentElement?.clientWidth;
       if (!width) {
         return;

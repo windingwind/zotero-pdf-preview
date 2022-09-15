@@ -33,7 +33,7 @@ class AddonEvents extends AddonModule {
     ) as HTMLElement;
     splitter.addEventListener("mouseup", (e) => {
       console.log("Preview triggered by resize");
-      this.doPreview();
+      this.doPreview(true);
     });
   }
 
@@ -52,7 +52,7 @@ class AddonEvents extends AddonModule {
     });
   }
 
-  private doPreview() {
+  private doPreview(force: boolean = false) {
     this.updatePreviewTab();
     const previewType = this.getPreviewType();
     console.log(previewType);
@@ -63,7 +63,7 @@ class AddonEvents extends AddonModule {
     } else if (previewType === PreviewType.null) {
       return;
     }
-    this._Addon.preview.preview(previewType);
+    this._Addon.preview.preview(previewType, force);
   }
 
   public getPreviewType(): PreviewType {
