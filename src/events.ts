@@ -28,7 +28,9 @@ class AddonEvents extends AddonModule {
   }
 
   private initPreviewResizeListener() {
-    const splitter = document.getElementById("zotero-items-splitter");
+    const splitter = document.getElementById(
+      "zotero-items-splitter"
+    ) as HTMLElement;
     splitter.addEventListener("mouseup", (e) => {
       console.log("Preview triggered by resize");
       this.doPreview();
@@ -36,7 +38,7 @@ class AddonEvents extends AddonModule {
   }
 
   private initTabSelectListener() {
-    const tabbox = document.querySelector("#zotero-view-tabbox");
+    const tabbox = document.querySelector("#zotero-view-tabbox") as HTMLElement;
     tabbox.addEventListener("command", (e) => {
       if (
         !["zotero-editpane-info-tab", "pdf-preview-tab"].includes(
@@ -69,17 +71,21 @@ class AddonEvents extends AddonModule {
     const selectedPane = paneDeck.selectedPanel;
     if (selectedPane.id === "zotero-view-tabbox") {
       const tabbox: any = document.getElementById("zotero-view-tabbox");
-      const infoTab = document.getElementById("zotero-editpane-info-tab");
+      const infoTab = document.getElementById(
+        "zotero-editpane-info-tab"
+      ) as HTMLElement;
       const infoIndex = Array.prototype.indexOf.call(
-        infoTab.parentNode.childNodes,
+        infoTab.parentNode?.childNodes,
         infoTab
       );
       if (tabbox.selectedIndex === infoIndex && !this.previewSplitCollapsed) {
         return PreviewType.info;
       }
-      const previewTab = document.getElementById("pdf-preview-tab");
+      const previewTab = document.getElementById(
+        "pdf-preview-tab"
+      ) as HTMLElement;
       const previewIndex = Array.prototype.indexOf.call(
-        previewTab.parentNode.childNodes,
+        previewTab.parentNode?.childNodes,
         previewTab
       );
       if (tabbox.selectedIndex === previewIndex) {
@@ -98,7 +104,9 @@ class AddonEvents extends AddonModule {
     let label = "";
 
     label = Zotero.Prefs.get("pdfpreview.previewTabName") as string;
-    const previewTab = document.querySelector("#pdf-preview-tab");
+    const previewTab = document.querySelector(
+      "#pdf-preview-tab"
+    ) as HTMLElement;
     previewTab.setAttribute("label", label);
   }
 
@@ -114,42 +122,44 @@ class AddonEvents extends AddonModule {
     }
   }
 
-  private initPreviewInfoSplit(zitembox: Element = undefined) {
-    zitembox = zitembox || document.querySelector("#zotero-editpane-item-box");
+  private initPreviewInfoSplit(zitembox: Element | undefined = undefined) {
+    zitembox =
+      zitembox ||
+      (document.querySelector("#zotero-editpane-item-box") as Element);
     console.log(zitembox, zitembox.parentElement);
-    zitembox.parentElement.setAttribute("orient", "vertical");
+    zitembox.parentElement?.setAttribute("orient", "vertical");
     const boxBefore = document.createElement("box");
     boxBefore.id = "pdf-preview-infosplit-before";
     const boxAfter = document.createElement("box");
     boxAfter.id = "pdf-preview-infosplit-after";
     zitembox.before(boxBefore);
     zitembox.after(boxAfter);
-    const splitterBefore = document.createElement("splitter") as XUL.Splitter;
+    const splitterBefore = document.createElement("splitter") as Element;
     splitterBefore.id = "pdf-preview-infosplit-splitter-before";
     splitterBefore.setAttribute("collapse", "before");
     const grippyBefore = document.createElement("grippy");
     splitterBefore.append(grippyBefore);
     splitterBefore.addEventListener("command", (e) => {
       this.setSplitHeight(
-        document
-          .querySelector("#pdf-preview-infosplit-before")
-          .getAttribute("height")
+        (
+          document.querySelector("#pdf-preview-infosplit-before") as Element
+        ).getAttribute("height") as string
       );
       this.setSplitCollapsed(
         splitterBefore.getAttribute("state") === "collapsed"
       );
     });
     boxBefore.after(splitterBefore);
-    const splitterAfter = document.createElement("splitter") as XUL.Splitter;
+    const splitterAfter = document.createElement("splitter") as Element;
     splitterAfter.id = "pdf-preview-infosplit-splitter-after";
     splitterAfter.setAttribute("collapse", "after");
     const grippyAfter = document.createElement("grippy");
     splitterAfter.append(grippyAfter);
     splitterAfter.addEventListener("command", (e) => {
       this.setSplitHeight(
-        document
-          .querySelector("#pdf-preview-infosplit-after")
-          .getAttribute("height")
+        (
+          document.querySelector("#pdf-preview-infosplit-after") as Element
+        ).getAttribute("height") as string
       );
       this.setSplitCollapsed(
         splitterAfter.getAttribute("state") === "collapsed"
@@ -158,42 +168,45 @@ class AddonEvents extends AddonModule {
     boxAfter.before(splitterAfter);
   }
 
-  private initPreviewAttachmentSplit(zitembox: Element = undefined) {
-    zitembox = zitembox || document.querySelector("#zotero-attachment-box");
+  private initPreviewAttachmentSplit(
+    zitembox: Element | undefined = undefined
+  ) {
+    zitembox =
+      zitembox || (document.querySelector("#zotero-attachment-box") as Element);
     console.log(zitembox, zitembox.parentElement);
-    zitembox.parentElement.setAttribute("orient", "vertical");
+    zitembox.parentElement?.setAttribute("orient", "vertical");
     const boxBefore = document.createElement("box");
     boxBefore.id = "pdf-preview-attachment-before";
     const boxAfter = document.createElement("box");
     boxAfter.id = "pdf-preview-attachment-after";
     zitembox.before(boxBefore);
     zitembox.after(boxAfter);
-    const splitterBefore = document.createElement("splitter") as XUL.Splitter;
+    const splitterBefore = document.createElement("splitter") as Element;
     splitterBefore.id = "pdf-preview-attachment-splitter-before";
     splitterBefore.setAttribute("collapse", "before");
     const grippyBefore = document.createElement("grippy");
     splitterBefore.append(grippyBefore);
     splitterBefore.addEventListener("command", (e) => {
       this.setSplitHeight(
-        document
-          .querySelector("#pdf-preview-attachment-before")
-          .getAttribute("height")
+        (
+          document.querySelector("#pdf-preview-attachment-before") as Element
+        ).getAttribute("height") as string
       );
       this.setSplitCollapsed(
         splitterBefore.getAttribute("state") === "collapsed"
       );
     });
     boxBefore.after(splitterBefore);
-    const splitterAfter = document.createElement("splitter") as XUL.Splitter;
+    const splitterAfter = document.createElement("splitter") as Element;
     splitterAfter.id = "pdf-preview-attachment-splitter-after";
     splitterAfter.setAttribute("collapse", "after");
     const grippyAfter = document.createElement("grippy");
     splitterAfter.append(grippyAfter);
     splitterAfter.addEventListener("command", (e) => {
       this.setSplitHeight(
-        document
-          .querySelector("#pdf-preview-attachment-after")
-          .getAttribute("height")
+        (
+          document.querySelector("#pdf-preview-attachment-after") as Element
+        ).getAttribute("height") as string
       );
       this.setSplitCollapsed(
         splitterAfter.getAttribute("state") === "collapsed"
@@ -204,9 +217,9 @@ class AddonEvents extends AddonModule {
 
   private updatePreviewInfoSplit() {
     // Check BBT layout
-    const BBTBox = document
-      .getElementById("zotero-editpane-item-box")
-      .parentElement.querySelector("#better-bibtex-editpane-item-box");
+    const BBTBox = (
+      document.getElementById("zotero-editpane-item-box") as Element
+    ).parentElement?.querySelector("#better-bibtex-editpane-item-box");
     if (BBTBox && this.previewMode !== "BBT") {
       this.previewMode = "BBT";
       const toRemove = [
@@ -222,7 +235,7 @@ class AddonEvents extends AddonModule {
         }
       });
       console.log("re-init preview for BBT");
-      this.initPreviewInfoSplit(BBTBox.parentElement);
+      this.initPreviewInfoSplit(BBTBox.parentElement as Element);
       // Swith selected tab to trigger some re-render of splitter
       // Otherwise the splitters are unvisible
       const tabbox: any = document.querySelector("#zotero-view-tabbox");
@@ -238,12 +251,12 @@ class AddonEvents extends AddonModule {
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
     ) as "before" | "after";
-    const splitContainer: HTMLDivElement = document.querySelector(
+    const splitContainer = document.querySelector(
       `#pdf-preview-infosplit-${splitType}`
-    );
-    const splitSplitter: HTMLDivElement = document.querySelector(
+    ) as HTMLDivElement;
+    const splitSplitter = document.querySelector(
       `#pdf-preview-infosplit-splitter-${splitType}`
-    );
+    ) as HTMLDivElement;
     if (hidden) {
       splitContainer.setAttribute("height", "0");
       splitContainer.style.visibility = "hidden";
@@ -257,12 +270,12 @@ class AddonEvents extends AddonModule {
     // Hide another preview
     const hiddenType: "before" | "after" =
       splitType === "before" ? "after" : "before";
-    const hiddenContainer: HTMLDivElement = document.querySelector(
+    const hiddenContainer = document.querySelector(
       `#pdf-preview-infosplit-${hiddenType}`
-    );
-    const hiddenSplitter: HTMLDivElement = document.querySelector(
+    ) as HTMLDivElement;
+    const hiddenSplitter = document.querySelector(
       `#pdf-preview-infosplit-splitter-${hiddenType}`
-    );
+    ) as HTMLDivElement;
     hiddenContainer.setAttribute("height", "0");
     hiddenContainer.style.visibility = "hidden";
     hiddenSplitter.style.visibility = "hidden";
@@ -273,12 +286,12 @@ class AddonEvents extends AddonModule {
     const splitType: "before" | "after" = Zotero.Prefs.get(
       "pdfpreview.splitType"
     ) as "before" | "after";
-    const splitContainer: HTMLDivElement = document.querySelector(
+    const splitContainer = document.querySelector(
       `#pdf-preview-attachment-${splitType}`
-    );
-    const splitSplitter: HTMLDivElement = document.querySelector(
+    ) as HTMLDivElement;
+    const splitSplitter = document.querySelector(
       `#pdf-preview-attachment-splitter-${splitType}`
-    );
+    ) as HTMLDivElement;
     if (hidden) {
       splitContainer.setAttribute("height", "0");
       splitContainer.style.visibility = "hidden";
@@ -292,12 +305,12 @@ class AddonEvents extends AddonModule {
     // Hide another preview
     const hiddenType: "before" | "after" =
       splitType === "before" ? "after" : "before";
-    const hiddenContainer: HTMLDivElement = document.querySelector(
+    const hiddenContainer = document.querySelector(
       `#pdf-preview-attachment-${hiddenType}`
-    );
-    const hiddenSplitter: HTMLDivElement = document.querySelector(
+    ) as HTMLDivElement;
+    const hiddenSplitter = document.querySelector(
       `#pdf-preview-attachment-splitter-${hiddenType}`
-    );
+    ) as HTMLDivElement;
     hiddenContainer.setAttribute("height", "0");
     hiddenContainer.style.visibility = "hidden";
     hiddenSplitter.style.visibility = "hidden";
@@ -312,7 +325,7 @@ class AddonEvents extends AddonModule {
   }
 
   public setSplitCollapsed(
-    collapsed: boolean = undefined,
+    collapsed: boolean | undefined = undefined,
     quietly: boolean = false
   ) {
     if (typeof collapsed === "undefined") {
@@ -332,9 +345,10 @@ class AddonEvents extends AddonModule {
       "pdf-preview-attachment-splitter-after",
     ];
     toCollapseIds.forEach((_id) => {
-      document
-        .getElementById(_id)
-        .setAttribute("state", collapsed ? "collapsed" : "open");
+      (document.getElementById(_id) as Element).setAttribute(
+        "state",
+        collapsed ? "collapsed" : "open"
+      );
     });
   }
 }

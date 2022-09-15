@@ -3,5 +3,6 @@
     "module": "commonjs",
     "target": "es6",
   },
-  "exclude": ["node_modules", "builds"]
+  "include": ["node_modules/zotero-types"],
+  "exclude": ["builds"]
 }
