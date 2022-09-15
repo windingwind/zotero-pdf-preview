@@ -27,6 +27,34 @@
         box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
         cursor: pointer;
       }
+      .annotationLayer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        opacity: 0.2;
+        line-height: 1;
+        pointer-events: none;
+      }
+
+      .annotationLayer > section {
+        color: transparent;
+        position: absolute;
+        white-space: pre;
+        cursor: text;
+        transform-origin: 0% 0%;
+      }
+
+      .annotationLayer > .linkAnnotation > a {
+        position: absolute;
+        font-size: 1em;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
     </style>
 
     <link rel="stylesheet" href="resource://zotero/pdf-reader/viewer.css" />
@@ -98,6 +126,34 @@
               viewport: viewport,
             })
             .promise.then(() => {
+              // Render file annotations
+              page.getAnnotations().then((annotationData) => {
+                if (annotationData.length === 0) {
+                  return;
+                }
+                const annotationLayer = document.getElementById(
+                  `annotation-layer-${pageNumber}`
+                );
+                annotationLayer.width = viewport.width * ratio;
+                annotationLayer.height = viewport.height * ratio;
+                annotationLayer.style.width = viewport.width + "px";
+                annotationLayer.style.height = viewport.height + "px";
+                annotationLayer.style.left = `${canvas.offsetLeft}px`;
+                annotationLayer.style.top = `${canvas.offsetTop}px`;
+
+                // Render the annotation layer
+                // Catch linkService error
+                try {
+                  pdfjsLib.AnnotationLayer.render({
+                    viewport: viewport.clone({ dontFlip: true }),
+                    div: annotationLayer,
+                    annotations: annotationData,
+                    renderInteractiveForms: false,
+                    linkService: pdfjsLib.LinkTarget.NONE,
+                    page: page,
+                  });
+                } catch (e) {}
+              });
               // Render annotations
               for (const annot of annotations) {
                 _ctx = canvas.getContext("2d");
@@ -260,9 +316,12 @@
               (annot) => annot.position.pageIndex === i - 1
             );
             console.log(annotations, currentAnnotations);
-            canvas = document.createElement("canvas");
+            const canvas = document.createElement("canvas");
             canvas.className = "pdf-page-canvas flexPage";
-            viewer.appendChild(canvas);
+            const annotationLayer = document.createElement("div");
+            annotationLayer.id = `annotation-layer-${i}`;
+            annotationLayer.className = "annotationLayer";
+            viewer.append(canvas, annotationLayer);
             renderPage(pdf, i, canvas, width, currentAnnotations);
           }
           Zotero.PDFPreview.preview._loadingPromise.resolve();
