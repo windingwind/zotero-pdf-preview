@@ -71,24 +71,12 @@ class AddonEvents extends AddonModule {
     const selectedPane = paneDeck.selectedPanel;
     if (selectedPane.id === "zotero-view-tabbox") {
       const tabbox: any = document.getElementById("zotero-view-tabbox");
-      const infoTab = document.getElementById(
-        "zotero-editpane-info-tab"
-      ) as HTMLElement;
-      const infoIndex = Array.prototype.indexOf.call(
-        infoTab.parentNode?.childNodes,
-        infoTab
-      );
-      if (tabbox.selectedIndex === infoIndex && !this.previewSplitCollapsed) {
+      const infoTab = document.getElementById("zotero-editpane-info-tab");
+      if (tabbox.selectedTab === infoTab && !this.previewSplitCollapsed) {
         return PreviewType.info;
       }
-      const previewTab = document.getElementById(
-        "pdf-preview-tab"
-      ) as HTMLElement;
-      const previewIndex = Array.prototype.indexOf.call(
-        previewTab.parentNode?.childNodes,
-        previewTab
-      );
-      if (tabbox.selectedIndex === previewIndex) {
+      const previewTab = document.getElementById("pdf-preview-tab");
+      if (tabbox.selectedTab === previewTab) {
         return PreviewType.preview;
       }
     } else if (
