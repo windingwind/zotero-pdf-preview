@@ -18,6 +18,12 @@ Fast & easy. Do not require any third-party softwares.
 - Restart Zotero, by clicking `restart now` in the extensions list where the
   Zotero PDF Translate plugin is now listed.
 
+## Usage
+
+Preview can be found in the right side panel of Zotero's main window. You can preview items in either the top/bottom of the info pane or the preview pane. See [Settings](#settings) to customize your preview position.
+
+To show/hide the preview in info pane, use shortcut `P` or drag/click the toggel bar.
+
 ## Settings
 
 Find settings here: Menubar -> Edit -> Preferences -> Preview
