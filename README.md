@@ -22,7 +22,13 @@ Fast & easy. Do not require any third-party softwares.
 
 Preview can be found in the right side panel of Zotero's main window. You can preview items in either the top/bottom of the info pane or the preview pane. See [Settings](#settings) to customize your preview position.
 
+## Shortcuts
+
 To show/hide the preview in info pane, use shortcut `P` or drag/click the toggel bar.
+
+To zoom in or zoom out, hold `ctrl/cmd` and scroll, or `ctrl/cmd and +/-`;
+
+To reset zoom, use `ctrl/cmd + 0`.
 
 ## Settings
 
@@ -34,19 +40,23 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Preview in Info Tab                        | Enable to show the preview in a split view under 'info' tab.                                                         | `true`        |
 | Preview Position                           | Preview position in the Info Tab                                                                                     | `bottom`      |
 | Preview in 'Preview' Tab                   | Enable show the preview in a new tab of right sidebar.                                                               | `true`        |
+| Show Toolbar in Info Tab/Preview Tab       | Enable show the toolbar there.                                                                                       | `true`        |
 | Auto Focus Preview Tab                     | Enable to focus the preview tab automatically when you select a valid preview item.                                  | `false`       |
 | Show Annotations                           | Enable to show annotations of the PDF files. May slow down the preview speed.                                        | `false`       |
 | Show Hovered Page Style                    | Enable extra style of the hovered page: box shadow and hand cursor.                                                  | `true`        |
 | Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF.                                                        | `true`        |
 | Dark Mode                                  | Enable to preview PDF files in dark mode. This is a naive dark mode and images color may not be displayed correctly. | `false`       |
-| Preview First _N_ Pages                    | See [below](#advanced-usage-of-preview-page-index)                                                                                     | `10`          |
+| Preview First _N_ Pages                    | See [below](#advanced-usage-of-preview-page-index)                                                                   | `10`          |
 | Preview Tab Name                           | Set the tab label.                                                                                                   | `preview`     |
 
 ### Advanced Usage of Preview Page Index
 
 A python-style slice command is supported.
 
-Syntax: `command1,command2,...`  
+<details>
+  <summary>Syntax: Click to expand</summary>
+  
+  `command1,command2,...`  
 Supported Commands:
 
 - Number  
@@ -63,8 +73,8 @@ Supported Commands:
   > preview page 10
 
 - Slice  
-  `startIndex:stopIndex`.  
-  The `startIndex` page is included while the `stopIndex` page is excluded.
+   `startIndex:stopIndex`.  
+   The `startIndex` page is included while the `stopIndex` page is excluded.
 
   `startIndex` or `stopIndex` may be a negative number, which means it counts from the end of the file instead of the beginning.
 
@@ -103,6 +113,8 @@ Supported Commands:
   > Example:  
   > `:`  
   > preview every page
+
+  </details>
 
 ## Development & Contributing
 
@@ -165,7 +177,6 @@ Part of the code of this repo refers to other open-source projects within the al
 - [zotero-better-notes](https://github.com/windingwind/zotero-better-notes) Note enhancements for Zotero
 - [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate) PDF translation for Zotero 6
 - [zotero-tag](https://github.com/windingwind/zotero-tag) Automatically tag items/Batch tagging
-
 
 ## Sponsor Me
 
