@@ -122,6 +122,9 @@
       var MAX_SCALE = 10.0;
       var DEFAULT_SCALE_VALUE = "auto";
       var currentScale = 1;
+      var delta = 0;
+      var zoomTime = 0;
+      var renderingLocks = [];
 
       function getScale() {
         return parseFloat(Zotero.Prefs.get("pdfpreview.previewScale"));
@@ -347,6 +350,8 @@
       async function renderDocument(recreate = true) {
         // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
+        const currentTime = new Date().getTime();
+        renderingLocks.push(currentTime);
         Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
         const viewerContainer = document.getElementById("viewerContainer");
         if (Zotero.Prefs.get("pdfpreview.darkMode")) {
@@ -444,8 +449,9 @@
           Zotero.PDFPreview.preview._loadingPromise.resolve();
         } catch (e) {
           Zotero.PDFPreview.preview._loadingPromise.resolve();
-          throw e;
+          console.warn(e);
         }
+        renderingLocks.splice(renderingLocks.indexOf(currentTime), 1);
       }
 
       async function handler(e) {
@@ -492,6 +498,48 @@
         document
           .getElementById("zoomAuto")
           .addEventListener("click", (e) => pdfViewZoomAuto());
+
+        function normalizeWheelEventDirection(evt) {
+          let delta = Math.hypot(evt.deltaX, evt.deltaY);
+          const angle = Math.atan2(evt.deltaY, evt.deltaX);
+          if (-0.25 * Math.PI < angle && angle < 0.75 * Math.PI) {
+            // All that is left-up oriented has to change the sign.
+            delta = -delta;
+          }
+          return delta;
+        }
+
+        const zoom = async () => {
+          const calledTime = new Date().getTime();
+          zoomTime = calledTime;
+          await Zotero.Promise.delay(30);
+          if (zoomTime > calledTime) {
+            return;
+          }
+          if (renderingLocks.length > 0) {
+            return;
+          }
+          let _delta = delta;
+          console.log(_delta, delta);
+          delta = 0;
+          if (_delta > 0) {
+            await pdfViewZoomIn(Math.ceil(_delta));
+          } else if (_delta < 0) {
+            await pdfViewZoomOut(Math.ceil(-_delta));
+          }
+          await Zotero.Promise.delay(100);
+          if (zoomTime > calledTime) {
+            return;
+          }
+          renderDocument();
+        };
+
+        window.addEventListener("wheel", async (e) => {
+          if (e.ctrlKey) {
+            delta += normalizeWheelEventDirection(e);
+            await zoom();
+          }
+        });
 
         currentScale = getScale();
         Zotero.PDFPreview.preview._initPromise &&
