@@ -1,6 +1,8 @@
+import PDFPreview from "./addon";
+
 class AddonModule {
-  protected _Addon: any;
-  constructor(parent: any) {
+  protected _Addon: PDFPreview;
+  constructor(parent: PDFPreview) {
     this._Addon = parent;
   }
 }

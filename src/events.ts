@@ -23,7 +23,7 @@ class AddonEvents extends AddonModule {
   private initItemSelectListener() {
     ZoteroPane.itemsView.onSelect.addListener(() => {
       console.log("Preview triggered by selection change");
-      this.doPreview();
+      this.updatePreviewDocument();
     });
   }
 
@@ -31,9 +31,17 @@ class AddonEvents extends AddonModule {
     const splitter = document.getElementById(
       "zotero-items-splitter"
     ) as HTMLElement;
-    splitter.addEventListener("mouseup", (e) => {
+    const grippy = document.getElementById(
+      "zotero-items-grippy"
+    ) as HTMLElement;
+    const onResize = (e) => {
       console.log("Preview triggered by resize");
-      this.doPreview(true);
+      this.updatePreviewIframe();
+      this._Addon.preview.updateWidth(this.getPreviewType());
+    };
+    splitter.addEventListener("mouseup", onResize);
+    grippy.addEventListener("mouseup", (e) => {
+      setTimeout(onResize, 10);
     });
   }
 
@@ -48,12 +56,11 @@ class AddonEvents extends AddonModule {
         return;
       }
       console.log("Preview triggered by tab change");
-      this.doPreview();
+      this.updatePreviewDocument();
     });
   }
 
-  private doPreview(force: boolean = false) {
-    this.updatePreviewTab();
+  private updatePreviewIframe() {
     const previewType = this.getPreviewType();
     console.log(previewType);
     if (previewType === PreviewType.info) {
@@ -63,7 +70,12 @@ class AddonEvents extends AddonModule {
     } else if (previewType === PreviewType.null) {
       return;
     }
-    this._Addon.preview.preview(previewType, force);
+  }
+
+  private updatePreviewDocument(force: boolean = false) {
+    this.updatePreviewTab();
+    this.updatePreviewIframe();
+    this._Addon.preview.preview(this.getPreviewType(), force);
   }
 
   public getPreviewType(): PreviewType {
@@ -323,7 +335,7 @@ class AddonEvents extends AddonModule {
       const lastCollapsed = this.previewSplitCollapsed;
       this.previewSplitCollapsed = collapsed;
       if (lastCollapsed && !collapsed) {
-        this.doPreview();
+        this.updatePreviewDocument();
       }
     }
     const toCollapseIds = [
