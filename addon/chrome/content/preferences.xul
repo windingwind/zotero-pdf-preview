@@ -10,6 +10,8 @@
         <preference id="pref-__addonRef__-enableSplit" name="extensions.zotero.__addonRef__.enableSplit" type="bool" />
         <preference id="pref-__addonRef__-splitType" name="extensions.zotero.__addonRef__.splitType" type="string" />
         <preference id="pref-__addonRef__-enableTab" name="extensions.zotero.__addonRef__.enableTab" type="bool" />
+        <preference id="pref-__addonRef__-showToolInSplit" name="extensions.zotero.__addonRef__.showToolInSplit" type="bool" />
+        <preference id="pref-__addonRef__-showToolInTab" name="extensions.zotero.__addonRef__.showToolInTab" type="bool" />
         <preference id="pref-__addonRef__-showAnnotations" name="extensions.zotero.__addonRef__.showAnnotations" type="bool" />
         <preference id="pref-__addonRef__-showHover" name="extensions.zotero.__addonRef__.showHover" type="bool" />
         <preference id="pref-__addonRef__-enableJump" name="extensions.zotero.__addonRef__.enableJump" type="bool" />
@@ -30,6 +32,10 @@
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-enableTab" preference="pref-__addonRef__-enableTab" label="&zotero.__addonRef__.pref.enableTab.label;" />
+        </row>
+        <row>
+          <checkbox preference="pref-__addonRef__-showToolInSplit" label="&zotero.__addonRef__.pref.showToolInSplit.label;" />
+          <checkbox preference="pref-__addonRef__-showToolInTab" label="&zotero.__addonRef__.pref.showToolInTab.label;" />
         </row>
         <row>
           <checkbox id="zotero-prefpane-__addonRef__-settings-showAnnotations" preference="pref-__addonRef__-showAnnotations" label="&zotero.__addonRef__.pref.showAnnotations.label;" />

@@ -176,6 +176,7 @@ class AddonPreview extends AddonModule {
                     )
                 )
             : [],
+          previewType: type,
         },
         "*"
       );

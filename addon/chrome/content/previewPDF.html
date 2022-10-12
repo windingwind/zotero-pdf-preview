@@ -126,6 +126,16 @@
       var zoomTime = 0;
       var renderingLocks = [];
 
+      function updateToolbar(previewType) {
+        const toolbar = document.querySelector(".toolbar");
+        const showToolbar =
+          ((previewType === 1 || previewType === 3) &&
+            Zotero.Prefs.get("pdfpreview.showToolInSplit")) ||
+          (previewType === 2 && Zotero.Prefs.get("pdfpreview.showToolInTab"));
+        toolbar.style.visibility = showToolbar ? "visible" : "hidden";
+        toolbar.style.height = showToolbar ? "32px" : "0";
+      }
+
       function getScale() {
         return parseFloat(Zotero.Prefs.get("pdfpreview.previewScale"));
       }
@@ -470,6 +480,7 @@
             cachedData.viewportWidth = e.data.width;
             cachedData.appAnnotations = e.data.annotations;
           }
+          updateToolbar(e.data.previewType);
           renderDocument(true);
         } else if (e.data.type === "updateWidth") {
           cachedData.viewportWidth = e.data.width;
