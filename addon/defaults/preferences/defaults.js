@@ -9,6 +9,7 @@ pref("extensions.zotero.pdfpreview.showToolInSplit", true);
 pref("extensions.zotero.pdfpreview.showToolInTab", true);
 pref("extensions.zotero.pdfpreview.enableJump", true);
 pref("extensions.zotero.pdfpreview.darkMode", false);
+pref("extensions.zotero.pdfpreview.previewPageNum", "10");
 pref("extensions.zotero.pdfpreview.splitHeight", "400");
 pref("extensions.zotero.pdfpreview.previewScale", "1.0");
 pref("extensions.zotero.pdfpreview.previewTabName", "Preview");
