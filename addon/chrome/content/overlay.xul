@@ -24,15 +24,4 @@
     <commandset id="mainCommandSet">
         <command id="cmd_pdf_preview" oncommand="Zotero.PDFPreview.events.setSplitCollapsed();" />
     </commandset>
-
-    <tabbox id="zotero-view-tabbox">
-        <tabs id="zotero-editpane-tabs">
-            <tab id="pdf-preview-tab" label="&zotero.__addonRef__.tab.label;"></tab>
-        </tabs>
-        <tabpanels id="zotero-view-item">
-            <!-- tabpanel > div #pdf-preview-infosplit in events.ts -->
-            <tabpanel id="pdf-preview-tabpanel" style="overflow: hidden;"></tabpanel>
-        </tabpanels>
-    </tabbox>
-
 </overlay>
