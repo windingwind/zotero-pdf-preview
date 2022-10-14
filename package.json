@@ -3,7 +3,7 @@
   "addonName": "Zotero PDF Preview",
   "addonID": "pdfpreview@windingwind.com",
   "addonRef": "pdfpreview",
-  "version": "0.2.10",
+  "version": "0.3.1",
   "description": "PDF Preview for Zotero.",
   "main": "src/index.js",
   "scripts": {
@@ -33,6 +33,6 @@
   "devDependencies": {
     "@types/node": "^17.0.31",
     "release-it": "^14.14.0",
-    "zotero-types": "^0.0.4"
+    "zotero-types": "^0.0.5"
   }
 }

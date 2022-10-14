@@ -9,19 +9,30 @@
     <meta name="google" content="notranslate" />
 
     <style>
+      :root {
+        --page-margin: 8px auto 8px;
+      }
       body {
         background-color: #808080;
         margin: 0;
         padding: 0;
+        overflow-y: hidden;
       }
-      .flexViewer {
+      #toolbarContainer {
+        background-color: #f6f6f6;
+      }
+      .toolbarViewerBlock {
         display: flex;
-        flex-direction: column;
         align-items: center;
       }
-      .flexPage {
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
+      #viewerContainer {
+        display: block;
+        height: inherit;
+        overflow-y: scroll;
+      }
+      .viewerCanvas {
+        display: block;
+        margin: var(--page-margin) !important;
       }
       .allowFocus:hover {
         box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
@@ -64,18 +75,128 @@
   </head>
 
   <body tabindex="1">
-    <div id="pdf-viewer" class="pdfViewer flexViewer"></div>
+    <div class="toolbar">
+      <div id="toolbarContainer">
+        <div id="toolbarViewer">
+          <div class="toolbarViewerLeft toolbarViewerBlock"></div>
+          <div class="toolbarViewerMiddle toolbarViewerBlock">
+            <div class="splitToolbarButton">
+              <button
+                id="zoomOut"
+                class="toolbarButton zoomOut"
+                title="Zoom Out"
+                tabindex="-1"
+                data-l10n-id="zoom_out"
+              ></button>
+              <button
+                id="zoomIn"
+                class="toolbarButton zoomIn"
+                title="Zoom In"
+                tabindex="-1"
+                data-l10n-id="zoom_in"
+              ></button>
+              <button
+                id="zoomAuto"
+                class="toolbarButton zoomAuto"
+                title="Zoom Auto"
+                tabindex="-1"
+              ></button>
+            </div>
+          </div>
+          <div class="toolbarViewerRight toolbarViewerBlock"></div>
+        </div>
+      </div>
+    </div>
+    <div id="viewerContainer" class="pdfViewer"></div>
 
     <script>
-      var itemID = -1;
-      var pdf;
+      var cachedData = {
+        itemID: -1,
+        pdfDocument: undefined,
+        appAnnotations: [],
+        viewportWidth: 0,
+      };
       var noteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="__size__" height="__size__" viewBox="0 0 24 24"><polygon fill="__color__" points="0.5 0.5 23.5 0.5 23.5 23.5 11.5 23.5 0.5 12.5 0.5 0.5"></polygon><polygon points="0.5 12.5 11.5 12.5 11.5 23.5 0.5 12.5" fill="#fff" opacity="0.4"></polygon><path d="M0,0V12.707L11.293,24H24V0ZM11,22.293,1.707,13H11ZM23,23H12V12H1V1H23Z"></path></svg>`;
+      var MIN_SCALE = 0.25;
+      var DEFAULT_SCALE_DELTA = 1.1;
+      var MAX_SCALE = 10.0;
+      var DEFAULT_SCALE_VALUE = "auto";
+      var currentScale = 1;
+      var delta = 0;
+      var zoomTime = 0;
+
+      function updateToolbar(previewType) {
+        const toolbar = document.querySelector(".toolbar");
+        const showToolbar =
+          ((previewType === 1 || previewType === 3) &&
+            Zotero.Prefs.get("pdfpreview.showToolInSplit")) ||
+          (previewType === 2 && Zotero.Prefs.get("pdfpreview.showToolInTab"));
+        toolbar.style.visibility = showToolbar ? "visible" : "hidden";
+        toolbar.style.height = showToolbar ? "32px" : "0";
+      }
+
+      function getScale() {
+        return parseFloat(Zotero.Prefs.get("pdfpreview.previewScale"));
+      }
+
+      function setScale() {
+        Zotero.Prefs.set("pdfpreview.previewScale", String(currentScale));
+      }
+
+      async function pdfViewZoomIn(ticks) {
+        const viewerContainer = document.getElementById("viewerContainer");
+        let newScrollLeft = viewerContainer.scrollLeft / currentScale;
+        let newScrollTop = viewerContainer.scrollTop / currentScale;
+        var newScale = currentScale;
+        do {
+          newScale = (newScale * DEFAULT_SCALE_DELTA).toFixed(2);
+          newScale = Math.ceil(newScale * 10) / 10;
+          newScale = Math.min(MAX_SCALE, newScale);
+        } while (--ticks && newScale < MAX_SCALE);
+        currentScale = newScale;
+        // Update scale to prefs
+        setScale();
+        newScrollLeft *= newScale;
+        newScrollTop *= newScale;
+        viewerContainer.scrollTo(newScrollLeft, newScrollTop);
+        await renderDocument();
+      }
+
+      async function pdfViewZoomOut(ticks) {
+        const viewerContainer = document.getElementById("viewerContainer");
+        let newScrollLeft = viewerContainer.scrollLeft / currentScale;
+        let newScrollTop = viewerContainer.scrollTop / currentScale;
+        var newScale = currentScale;
+        do {
+          newScale = (newScale / DEFAULT_SCALE_DELTA).toFixed(2);
+          newScale = Math.floor(newScale * 10) / 10;
+          newScale = Math.max(MIN_SCALE, newScale);
+        } while (--ticks && newScale > MIN_SCALE);
+        currentScale = newScale;
+        // Update scale to prefs
+        setScale();
+        newScrollLeft *= newScale;
+        newScrollTop *= newScale;
+        viewerContainer.scrollTo(newScrollLeft, newScrollTop);
+        await renderDocument();
+      }
+
+      async function pdfViewZoomAuto() {
+        const viewerContainer = document.getElementById("viewerContainer");
+        let newScrollLeft = viewerContainer.scrollLeft / currentScale;
+        let newScrollTop = viewerContainer.scrollTop / currentScale;
+        currentScale = 1;
+        // Update scale to prefs
+        setScale();
+        viewerContainer.scrollTo(newScrollLeft, newScrollTop);
+        await renderDocument();
+      }
 
       function renderPage(currentPdf, pageNumber, canvas, width, annotations) {
         currentPdf.getPage(pageNumber).then(function (page) {
           const W = page.view[2];
           const H = page.view[3];
-          const totalScale = width / W;
+          const totalScale = (width / W) * currentScale;
           viewport = page.getViewport({ scale: totalScale });
           const ctx = canvas.getContext("2d");
           const dpr = window.devicePixelRatio || 1;
@@ -230,11 +351,12 @@
         });
       }
 
-      async function renderPreview(id, width, annotations) {
+      async function renderDocument(id) {
+        id = id || cachedData.itemID;
         // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
         Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
-        const viewerContainer = document.getElementById("pdf-viewer");
+        const viewerContainer = document.getElementById("viewerContainer");
         if (Zotero.Prefs.get("pdfpreview.darkMode")) {
           viewerContainer.style.filter = "invert(100%)";
         } else {
@@ -242,11 +364,11 @@
         }
 
         try {
-          viewer = document.getElementById("pdf-viewer");
+          viewer = document.getElementById("viewerContainer");
           viewer.innerHTML = "";
           let pages = [];
           const pageNumber = Zotero.Prefs.get("pdfpreview.previewPageNum");
-          const totalNumber = pdf.numPages;
+          const totalNumber = cachedData.pdfDocument.numPages;
           if (pageNumber.includes(",") || pageNumber.includes(":")) {
             pageNumber.split(",").forEach((s) => {
               if (s.includes(":")) {
@@ -306,46 +428,59 @@
           }
 
           for (i of pages) {
-            if (id !== itemID) {
+            if (id !== cachedData.itemID) {
               // Stop current render if there is a new item
-              console.log(id, itemID, "Eraly stop rendering");
+              console.log(id, cachedData.itemID, "Early stop rendering");
               break;
             }
             // pdf.js page index starts from 1
-            const currentAnnotations = annotations.filter(
+            const currentAnnotations = cachedData.appAnnotations.filter(
               (annot) => annot.position.pageIndex === i - 1
             );
-            console.log(annotations, currentAnnotations);
-            const canvas = document.createElement("canvas");
-            canvas.className = "pdf-page-canvas flexPage";
+            console.log(cachedData.appAnnotations, currentAnnotations);
+            const canvasLayer = document.createElement("canvas");
+            canvasLayer.id = `canvas-layer-${i}`;
+            canvasLayer.className = "pdf-page-canvas viewerCanvas";
             const annotationLayer = document.createElement("div");
             annotationLayer.id = `annotation-layer-${i}`;
             annotationLayer.className = "annotationLayer";
-            viewer.append(canvas, annotationLayer);
-            renderPage(pdf, i, canvas, width, currentAnnotations);
+            viewer.append(canvasLayer, annotationLayer);
+            renderPage(
+              cachedData.pdfDocument,
+              i,
+              canvasLayer,
+              cachedData.viewportWidth,
+              currentAnnotations
+            );
           }
           Zotero.PDFPreview.preview._loadingPromise.resolve();
         } catch (e) {
           Zotero.PDFPreview.preview._loadingPromise.resolve();
-          throw e;
+          console.warn(e);
         }
       }
 
       async function handler(e) {
         console.log(e);
         if (e.data.type === "renderPreview") {
-          if (itemID !== e.data.itemID) {
+          if (cachedData.itemID !== e.data.itemID) {
+            updateToolbar(e.data.previewType);
             // Destroy worker to avoid memory leak
-            pdf && pdf.destroy();
-            pdf = await pdfjsLib.getDocument({
+            cachedData.pdfDocument && cachedData.pdfDocument.destroy();
+            cachedData.pdfDocument = await pdfjsLib.getDocument({
               data: e.data.buffer,
               cMapUrl: "resource://zotero/pdf-reader/cmaps/",
               cMapPacked: true,
             }).promise;
             delete e.data.buffer;
-            itemID = e.data.itemID;
+            cachedData.itemID = e.data.itemID;
+            cachedData.viewportWidth = e.data.width;
+            cachedData.appAnnotations = e.data.annotations;
           }
-          renderPreview(e.data.itemID, e.data.width, e.data.annotations);
+          renderDocument(e.data.itemID);
+        } else if (e.data.type === "updateWidth") {
+          cachedData.viewportWidth = e.data.width;
+          renderDocument(cachedData.itemID);
         }
       }
 
@@ -360,6 +495,69 @@
 
         pdfjsLib.GlobalWorkerOptions.workerSrc =
           "resource://zotero/pdf-reader/pdf.worker.js";
+
+        document
+          .getElementById("zoomOut")
+          .addEventListener("click", (e) => pdfViewZoomOut(1));
+        document
+          .getElementById("zoomIn")
+          .addEventListener("click", (e) => pdfViewZoomIn(1));
+        document
+          .getElementById("zoomAuto")
+          .addEventListener("click", (e) => pdfViewZoomAuto());
+
+        function normalizeWheelEventDirection(evt) {
+          let delta = Math.hypot(evt.deltaX, evt.deltaY);
+          const angle = Math.atan2(evt.deltaY, evt.deltaX);
+          if (-0.25 * Math.PI < angle && angle < 0.75 * Math.PI) {
+            // All that is left-up oriented has to change the sign.
+            delta = -delta;
+          }
+          return delta;
+        }
+
+        const zoom = async () => {
+          const calledTime = new Date().getTime();
+          zoomTime = calledTime;
+          await Zotero.Promise.delay(30);
+          if (zoomTime > calledTime) {
+            return;
+          }
+          let _delta = delta;
+          console.log(_delta, delta);
+          delta = 0;
+          if (_delta > 0) {
+            await pdfViewZoomIn(Math.ceil(_delta));
+          } else if (_delta < 0) {
+            await pdfViewZoomOut(Math.ceil(-_delta));
+          }
+        };
+
+        window.addEventListener("wheel", async (e) => {
+          if (e.ctrlKey) {
+            delta += normalizeWheelEventDirection(e);
+            await zoom();
+          }
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.ctrlKey) {
+            console.log(e.keyCode);
+            if (e.key === "0") {
+              pdfViewZoomAuto();
+            } else if (
+              e.keyCode === 107 ||
+              e.keyCode === 187 ||
+              e.key === "="
+            ) {
+              pdfViewZoomIn(1);
+            } else if (e.key === "-") {
+              pdfViewZoomOut(1);
+            }
+          }
+        });
+
+        currentScale = getScale();
 
         Zotero.PDFPreview.preview._initPromise &&
           Zotero.PDFPreview.preview._initPromise.resolve();

@@ -55,6 +55,51 @@ class AddonPreview extends AddonModule {
     return new Uint8Array(buf).buffer;
   }
 
+  private getPreviewIds(type: PreviewType) {
+    let iframeId = "";
+    let containerId = "";
+    const splitType: "before" | "after" = Zotero.Prefs.get(
+      "pdfpreview.splitType"
+    ) as "before" | "after";
+    if (type === PreviewType.info) {
+      iframeId = `pdf-preview-info-${splitType}-container`;
+      containerId = `pdf-preview-infosplit-${splitType}`;
+    } else if (type === PreviewType.preview) {
+      iframeId = `pdf-preview-preview-container`;
+      containerId = "pdf-preview-tabpanel";
+    } else if (type === PreviewType.attachment) {
+      iframeId = `pdf-preview-attachment-${splitType}-container`;
+      containerId = `pdf-preview-attachment-${splitType}`;
+    }
+    return { iframeId, containerId };
+  }
+
+  private getPreviewElements(type: PreviewType) {
+    const { iframeId, containerId } = this.getPreviewIds(type);
+    return {
+      iframe: document.getElementById(iframeId) as HTMLIFrameElement,
+      container: document.getElementById(containerId),
+    };
+  }
+
+  public updateWidth(type: PreviewType) {
+    const iframe = this.getPreviewElements(type).iframe;
+    // Reset the width to allow parentElement to shrink
+    iframe.style.width = "100px";
+    const width = iframe.parentElement?.clientWidth;
+    if (!width) {
+      return;
+    }
+    iframe.style.width = `${width}px`;
+    iframe.contentWindow?.postMessage(
+      {
+        type: "updateWidth",
+        width: width - 40,
+      },
+      "*"
+    );
+  }
+
   public async preview(type: PreviewType, force: boolean = false) {
     if (
       Zotero.Prefs.get("pdfpreview.enable") === false ||
@@ -72,53 +117,34 @@ class AddonPreview extends AddonModule {
       item = this.item;
     }
 
-    let containerId = "";
-    let iframeId = "";
-    const splitType: "before" | "after" = Zotero.Prefs.get(
-      "pdfpreview.splitType"
-    ) as "before" | "after";
-    if (type === PreviewType.info) {
-      iframeId = `pdf-preview-info-${splitType}-container`;
-      containerId = `pdf-preview-infosplit-${splitType}`;
-    } else if (type === PreviewType.preview) {
-      iframeId = `pdf-preview-preview-container`;
-      containerId = "pdf-preview-tabpanel";
-    } else if (type === PreviewType.attachment) {
-      iframeId = `pdf-preview-attachment-${splitType}-container`;
-      containerId = `pdf-preview-attachment-${splitType}`;
-    } else {
-      return;
-    }
-
-    let previewIframe = document.getElementById(iframeId) as HTMLIFrameElement;
+    let { iframe: iframe, container } = this.getPreviewElements(type);
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;
       }
-      if (!previewIframe) {
+      if (!iframe) {
         console.log("init preview iframe");
         this._initPromise = Zotero.Promise.defer();
-        previewIframe = window.document.createElement("iframe");
-        previewIframe.setAttribute("id", iframeId);
-        previewIframe.setAttribute(
+        iframe = window.document.createElement("iframe");
+        iframe.setAttribute("id", this.getPreviewIds(type).iframeId);
+        iframe.setAttribute(
           "src",
           "chrome://PDFPreview/content/previewPDF.html"
         );
 
-        const container = document.getElementById(containerId);
         if (!container) {
           return;
         }
-        container.appendChild(previewIframe);
+        container.appendChild(iframe);
       }
-      previewIframe.hidden = false;
+      iframe.hidden = false;
       // Reset the width to allow parentElement to shrink
-      previewIframe.style.width = "100px";
-      const width = previewIframe.parentElement?.clientWidth;
+      iframe.style.width = "100px";
+      const width = iframe.parentElement?.clientWidth;
       if (!width) {
         return;
       }
-      previewIframe.style.width = `${width}px`;
+      iframe.style.width = `${width}px`;
       await this._initPromise.promise;
 
       if ((item as unknown as Zotero.Item).id !== this.item.id) {
@@ -126,12 +152,12 @@ class AddonPreview extends AddonModule {
         return;
       }
       if (this._skipRendering) {
-        previewIframe.hidden = false;
+        iframe.hidden = false;
         return;
       }
       console.log("do preview");
       this.lastType = type;
-      previewIframe.contentWindow?.postMessage(
+      iframe.contentWindow?.postMessage(
         {
           type: "renderPreview",
           itemID: this.item.id,
@@ -150,14 +176,15 @@ class AddonPreview extends AddonModule {
                     )
                 )
             : [],
+          previewType: type,
         },
         "*"
       );
-      previewIframe.hidden = false;
+      iframe.hidden = false;
     } else {
       console.log("hide preview");
-      if (previewIframe) {
-        previewIframe.hidden = true;
+      if (iframe) {
+        iframe.hidden = true;
       }
     }
   }

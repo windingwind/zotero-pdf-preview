@@ -31,9 +31,16 @@ class AddonEvents extends AddonModule {
     const splitter = document.getElementById(
       "zotero-items-splitter"
     ) as HTMLElement;
-    splitter.addEventListener("mouseup", (e) => {
+    const grippy = document.getElementById(
+      "zotero-items-grippy"
+    ) as HTMLElement;
+    const onResize = (e) => {
       console.log("Preview triggered by resize");
       this.doPreview(true);
+    };
+    splitter.addEventListener("mouseup", onResize);
+    grippy.addEventListener("mouseup", (e) => {
+      setTimeout(onResize, 10);
     });
   }
 
