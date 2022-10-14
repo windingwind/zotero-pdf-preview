@@ -9,6 +9,9 @@ class AddonEvents extends AddonModule {
     this.previewSplitCollapsed = false;
     Zotero.debug("PDFPreview: init called");
     await Zotero.uiReadyPromise;
+    if (!Zotero.Prefs.get("pdfpreview.enable")) {
+      return;
+    }
     this.initItemSelectListener();
     this.initPreviewResizeListener();
     this.initTabSelectListener();
@@ -18,6 +21,11 @@ class AddonEvents extends AddonModule {
     this.updatePreviewAttachmentSplit();
     this.updatePreviewTab();
     this.updatePreviewTabName();
+    let type = PreviewType.info;
+    while (type !== PreviewType.null) {
+      await this.initPreview(type);
+      type++;
+    }
   }
 
   private initItemSelectListener() {
@@ -345,6 +353,27 @@ class AddonEvents extends AddonModule {
         collapsed ? "collapsed" : "open"
       );
     });
+  }
+
+  public async initPreview(type: PreviewType) {
+    console.log("init preview iframe");
+    this._Addon.preview._initPromise = Zotero.Promise.defer();
+    const { container } = this._Addon.preview.getPreviewElements(type);
+    if (!container) {
+      return;
+    }
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("id", this._Addon.preview.getPreviewIds(type).iframeId);
+    iframe.setAttribute("src", "chrome://PDFPreview/content/previewPDF.html");
+    container.appendChild(iframe);
+    await this._Addon.preview._initPromise;
+    iframe.contentWindow.postMessage(
+      {
+        type: "updateToolbar",
+        previewType: type,
+      },
+      "*"
+    );
   }
 }
 

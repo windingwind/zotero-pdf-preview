@@ -481,6 +481,8 @@
         } else if (e.data.type === "updateWidth") {
           cachedData.viewportWidth = e.data.width;
           renderDocument(cachedData.itemID);
+        } else if (e.data.type === "updateToolbar") {
+          updateToolbar(e.data.previewType);
         }
       }
 

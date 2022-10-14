@@ -55,7 +55,7 @@ class AddonPreview extends AddonModule {
     return new Uint8Array(buf).buffer;
   }
 
-  private getPreviewIds(type: PreviewType) {
+  public getPreviewIds(type: PreviewType) {
     let iframeId = "";
     let containerId = "";
     const splitType: "before" | "after" = Zotero.Prefs.get(
@@ -74,7 +74,7 @@ class AddonPreview extends AddonModule {
     return { iframeId, containerId };
   }
 
-  private getPreviewElements(type: PreviewType) {
+  public getPreviewElements(type: PreviewType) {
     const { iframeId, containerId } = this.getPreviewIds(type);
     return {
       iframe: document.getElementById(iframeId) as HTMLIFrameElement,
@@ -117,25 +117,12 @@ class AddonPreview extends AddonModule {
       item = this.item;
     }
 
-    let { iframe: iframe, container } = this.getPreviewElements(type);
+    let { iframe } = this.getPreviewElements(type);
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;
       }
       if (!iframe) {
-        console.log("init preview iframe");
-        this._initPromise = Zotero.Promise.defer();
-        iframe = window.document.createElement("iframe");
-        iframe.setAttribute("id", this.getPreviewIds(type).iframeId);
-        iframe.setAttribute(
-          "src",
-          "chrome://PDFPreview/content/previewPDF.html"
-        );
-
-        if (!container) {
-          return;
-        }
-        container.appendChild(iframe);
       }
       iframe.hidden = false;
       // Reset the width to allow parentElement to shrink
