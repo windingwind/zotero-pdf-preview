@@ -27,7 +27,7 @@
       }
       #viewerContainer {
         display: block;
-        height: calc(100% - 32px);
+        height: inherit;
         overflow-y: scroll;
       }
       .viewerCanvas {
@@ -126,6 +126,7 @@
       var zoomTime = 0;
 
       function updateToolbar(previewType) {
+        const viewerContainer = document.getElementById("viewerContainer");
         const toolbar = document.querySelector(".toolbar");
         const showToolbar =
           ((previewType === 1 || previewType === 3) &&
@@ -133,6 +134,7 @@
           (previewType === 2 && Zotero.Prefs.get("pdfpreview.showToolInTab"));
         toolbar.style.visibility = showToolbar ? "visible" : "hidden";
         toolbar.style.height = showToolbar ? "32px" : "0";
+        viewerContainer.style.height = showToolbar ? "calc(100% - 32px)" : "inherit";
       }
 
       function getScale() {
