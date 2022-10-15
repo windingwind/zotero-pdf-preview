@@ -262,6 +262,7 @@ class AddonEvents extends AddonModule {
         tabIndex === tabbox.childNodes.length - 1 ? 1 : tabIndex + 1;
       setTimeout(() => {
         tabbox.selectedIndex = tabIndex;
+        this.initPreview(PreviewType.info);
       }, 1);
     }
 
