@@ -260,9 +260,10 @@ class AddonEvents extends AddonModule {
       const tabIndex = tabbox.selectedIndex;
       tabbox.selectedIndex =
         tabIndex === tabbox.childNodes.length - 1 ? 1 : tabIndex + 1;
-      setTimeout(() => {
+      setTimeout(async () => {
         tabbox.selectedIndex = tabIndex;
-        this.initPreview(PreviewType.info);
+        await this.initPreview(PreviewType.info);
+        this.doPreview(true);
       }, 1);
     }
 
@@ -378,8 +379,10 @@ class AddonEvents extends AddonModule {
     if (!container) {
       return;
     }
+    const iframeId = this._Addon.preview.getPreviewIds(type).iframeId;
+    document.getElementById(iframeId)?.remove();
     const iframe = document.createElement("iframe");
-    iframe.setAttribute("id", this._Addon.preview.getPreviewIds(type).iframeId);
+    iframe.setAttribute("id", iframeId);
     iframe.setAttribute("src", "chrome://PDFPreview/content/previewPDF.html");
     container.appendChild(iframe);
     await this._Addon.preview._initPromise;
