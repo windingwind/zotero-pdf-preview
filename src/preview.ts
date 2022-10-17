@@ -111,13 +111,20 @@ class AddonPreview extends AddonModule {
     ) {
       return;
     }
-    let item = await this.updatePreviewItem(type !== this.lastType || force);
+
+    let { iframe } = this.getPreviewElements(type);
+
+    let item = await this.updatePreviewItem(
+      type !== this.lastType ||
+        // @ts-ignore
+        this.item?.id !== iframe.contentWindow.cachedData.itemID ||
+        force
+    );
     console.log(item);
     if (force && !item) {
       item = this.item;
     }
 
-    let { iframe } = this.getPreviewElements(type);
     if (item) {
       if (this._loadingPromise) {
         await this._loadingPromise.promise;
