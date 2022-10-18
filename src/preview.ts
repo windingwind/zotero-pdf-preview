@@ -1,3 +1,4 @@
+import PDFPreview from "./addon";
 import { PreviewType } from "./base";
 import AddonModule from "./module";
 
@@ -13,12 +14,26 @@ class Annotation {
     this.pageLabel = pageLabel;
   }
 }
+
+const RELOAD_COUNT = 10;
+
 class AddonPreview extends AddonModule {
   item: Zotero.Item;
   lastType: PreviewType;
   _initPromise: any;
   _loadingPromise: any;
   _skipRendering: boolean;
+  _previewCounts: any;
+
+  constructor(parent: PDFPreview) {
+    super(parent);
+    this._previewCounts = {};
+    let type = PreviewType.info;
+    while (type !== PreviewType.null) {
+      this._previewCounts[type] = 0;
+      type++;
+    }
+  }
 
   public async updatePreviewItem(alwaysUpdate: boolean = false) {
     let items = ZoteroPane.getSelectedItems();
@@ -46,13 +61,6 @@ class AddonPreview extends AddonModule {
     }
     this.item = item;
     return this.item;
-  }
-
-  public async getBuffer() {
-    console.log(this.item);
-    let path: string = await this.item.getFilePathAsync();
-    let buf: any = await OS.File.read(path, {});
-    return new Uint8Array(buf).buffer;
   }
 
   public getPreviewIds(type: PreviewType) {
@@ -112,7 +120,20 @@ class AddonPreview extends AddonModule {
       return;
     }
 
+    if (this._previewCounts[type] >= RELOAD_COUNT) {
+      this._previewCounts[type] = 0;
+      await this._Addon.events.initPreview(type);
+      this._Addon.events.doPreview(true);
+      return;
+    }
+    await this._Addon.preview._initPromise;
     let { iframe } = this.getPreviewElements(type);
+
+    let t = 0;
+    while (t < 500 && iframe.contentDocument.readyState !== "complete") {
+      await Zotero.Promise.delay(10);
+      t += 10;
+    }
 
     let item = await this.updatePreviewItem(
       type !== this.lastType ||
@@ -155,7 +176,6 @@ class AddonPreview extends AddonModule {
         {
           type: "renderPreview",
           itemID: this.item.id,
-          buffer: await this.getBuffer(),
           width: width - 40,
           annotations: Zotero.Prefs.get("pdfpreview.showAnnotations")
             ? item

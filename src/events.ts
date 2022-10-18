@@ -92,7 +92,7 @@ class AddonEvents extends AddonModule {
     });
   }
 
-  private doPreview(force: boolean = false) {
+  public doPreview(force: boolean = false) {
     this.updatePreviewTab();
     const previewType = this.getPreviewType();
     console.log(previewType);

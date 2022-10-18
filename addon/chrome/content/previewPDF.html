@@ -110,11 +110,14 @@
     <div id="viewerContainer" class="pdfViewer"></div>
 
     <script>
+      Components.utils.import("resource://gre/modules/osfile.jsm");
+
       var cachedData = {
         itemID: -1,
         pdfDocument: undefined,
         appAnnotations: [],
         viewportWidth: 0,
+        previewType: -1,
       };
       var noteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="__size__" height="__size__" viewBox="0 0 24 24"><polygon fill="__color__" points="0.5 0.5 23.5 0.5 23.5 23.5 11.5 23.5 0.5 12.5 0.5 0.5"></polygon><polygon points="0.5 12.5 11.5 12.5 11.5 23.5 0.5 12.5" fill="#fff" opacity="0.4"></polygon><path d="M0,0V12.707L11.293,24H24V0ZM11,22.293,1.707,13H11ZM23,23H12V12H1V1H23Z"></path></svg>`;
       var MIN_SCALE = 0.25;
@@ -126,6 +129,7 @@
       var zoomTime = 0;
 
       function updateToolbar(previewType) {
+        cachedData.previewType = previewType;
         const viewerContainer = document.getElementById("viewerContainer");
         const toolbar = document.querySelector(".toolbar");
         const showToolbar =
@@ -134,7 +138,15 @@
           (previewType === 2 && Zotero.Prefs.get("pdfpreview.showToolInTab"));
         toolbar.style.visibility = showToolbar ? "visible" : "hidden";
         toolbar.style.height = showToolbar ? "32px" : "0";
-        viewerContainer.style.height = showToolbar ? "calc(100% - 32px)" : "inherit";
+        viewerContainer.style.height = showToolbar
+          ? "calc(100% - 32px)"
+          : "inherit";
+      }
+
+      async function getBuffer(itemID) {
+        let path = await Zotero.Items.get(itemID).getFilePathAsync();
+        let buf = await OS.File.read(path, {});
+        return new Uint8Array(buf).buffer;
       }
 
       function getScale() {
@@ -468,13 +480,18 @@
           if (cachedData.itemID !== e.data.itemID) {
             updateToolbar(e.data.previewType);
             // Destroy worker to avoid memory leak
+            // and increase the previewCount to let the plugin decide
+            // when to destroy the iframe
+            // because the buffers are not free even after the destroy()
+            Zotero.PDFPreview.preview._previewCounts[
+              cachedData.previewType
+            ] += 1;
             cachedData.pdfDocument && cachedData.pdfDocument.destroy();
             cachedData.pdfDocument = await pdfjsLib.getDocument({
-              data: e.data.buffer,
+              data: await getBuffer(e.data.itemID),
               cMapUrl: "resource://zotero/pdf-reader/cmaps/",
               cMapPacked: true,
             }).promise;
-            delete e.data.buffer;
             cachedData.itemID = e.data.itemID;
             cachedData.viewportWidth = e.data.width;
             cachedData.appAnnotations = e.data.annotations;
