@@ -16,7 +16,7 @@ Fast & easy. Do not require any third-party softwares.
 - Select `Install Add-on from file`.
 - Browse to where you downloaded the `.xpi` file and select it.
 - Restart Zotero, by clicking `restart now` in the extensions list where the
-  Zotero PDF Translate plugin is now listed.
+  Zotero PDF Preview plugin is now listed.
 
 ## Usage
 
