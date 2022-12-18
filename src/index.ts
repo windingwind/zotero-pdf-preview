@@ -1,11 +1,8 @@
 import PDFPreview from "./addon";
 
-Zotero.PDFPreview = new PDFPreview();
-
-window.addEventListener(
-  "load",
-  async function (e) {
-    Zotero.PDFPreview.events.onInit();
-  },
-  false
-);
+// Global: bootstrap > ctx
+if (!Zotero.PDFPreview) {
+  Zotero.PDFPreview = new PDFPreview();
+  // @ts-ignore
+  Zotero.PDFPreview.events.onInit(rootURI);
+}

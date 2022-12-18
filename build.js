@@ -9,12 +9,13 @@ const {
   author,
   description,
   homepage,
+  releasepage,
+  updaterdf,
   addonName,
   addonID,
   addonRef,
   version,
 } = require("./package.json");
-const { join } = require("path");
 
 function copyFileSync(source, target) {
   var targetFile = target;
@@ -95,6 +96,9 @@ async function main() {
 
   copyFolderRecursiveSync("addon", buildDir);
 
+  copyFileSync("update-template.json", "update.json");
+  copyFileSync("update-template.rdf", "update.rdf");
+
   await esbuild
     .build({
       entryPoints: ["src/index.ts"],
@@ -102,7 +106,6 @@ async function main() {
       // Entry should be the same as addon/chrome/content/overlay.xul
       outfile: path.join(buildDir, "addon/chrome/content/scripts/index.js"),
       // minify: true,
-      target: ["firefox60"],
     })
     .catch(() => process.exit(1));
 
@@ -113,31 +116,38 @@ async function main() {
       path.join(buildDir, "**/*.rdf"),
       path.join(buildDir, "**/*.dtd"),
       path.join(buildDir, "**/*.xul"),
-      path.join(buildDir, "**/*.html"),
-      path.join(buildDir, "**/*.manifest"),
+      path.join(buildDir, "**/*.xhtml"),
+      path.join(buildDir, "**/*.json"),
+      path.join(buildDir, "addon/defaults", "**/*.js"),
+      path.join(buildDir, "addon/chrome.manifest"),
+      path.join(buildDir, "addon/manifest.json"),
+      path.join(buildDir, "addon/bootstrap.js"),
+      "update.json",
       "update.rdf",
     ],
     from: [
       /__author__/g,
       /__description__/g,
       /__homepage__/g,
+      /__releasepage__/g,
+      /__updaterdf__/g,
       /__addonName__/g,
       /__addonID__/g,
       /__addonRef__/g,
       /__buildVersion__/g,
       /__buildTime__/g,
-      /<em:version>\S*<\/em:version>/g,
     ],
     to: [
       author,
       description,
       homepage,
+      releasepage,
+      updaterdf,
       addonName,
       addonID,
       addonRef,
       version,
       buildTime,
-      `<em:version>${version}</em:version>`,
     ],
     countMatches: true,
   };

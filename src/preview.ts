@@ -44,7 +44,7 @@ class AddonPreview extends AddonModule {
     if (item.isRegularItem()) {
       item = await items[0].getBestAttachment();
     }
-    console.log(items, item);
+    this._Addon.Utils.Tool.log(items, item);
     if (!item || !item.isPDFAttachment()) {
       this._Addon.events.setSplitCollapsed(true, true);
       return false;
@@ -54,7 +54,7 @@ class AddonPreview extends AddonModule {
       }
     }
     if (!alwaysUpdate && this.item && item.id === this.item.id) {
-      console.log("Preview skipped for same item");
+      this._Addon.Utils.Tool.log("Preview skipped for same item");
       this._skipRendering = true;
     } else {
       this._skipRendering = false;
@@ -110,7 +110,6 @@ class AddonPreview extends AddonModule {
 
   public async preview(type: PreviewType, force: boolean = false) {
     if (
-      Zotero.Prefs.get("pdfpreview.enable") === false ||
       Zotero.Prefs.get(
         `pdfpreview.${
           type === PreviewType.preview ? "enableTab" : "enableSplit"
@@ -141,7 +140,7 @@ class AddonPreview extends AddonModule {
         this.item?.id !== iframe.contentWindow.cachedData.itemID ||
         force
     );
-    console.log(item);
+    this._Addon.Utils.Tool.log(item);
     if (force && !item) {
       item = this.item;
     }
@@ -170,7 +169,7 @@ class AddonPreview extends AddonModule {
         iframe.hidden = false;
         return;
       }
-      console.log("do preview");
+      this._Addon.Utils.Tool.log("do preview");
       this.lastType = type;
       iframe.contentWindow?.postMessage(
         {
@@ -196,7 +195,7 @@ class AddonPreview extends AddonModule {
       );
       iframe.hidden = false;
     } else {
-      console.log("hide preview");
+      this._Addon.Utils.Tool.log("hide preview");
       if (iframe) {
         iframe.hidden = true;
       }

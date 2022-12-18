@@ -1,4 +1,3 @@
-pref("extensions.zotero.pdfpreview.enable", true);
 pref("extensions.zotero.pdfpreview.enableSplit", true);
 pref("extensions.zotero.pdfpreview.splitType", "after");
 pref("extensions.zotero.pdfpreview.splitHeight", "400");
