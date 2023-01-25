@@ -526,6 +526,7 @@
         document
           .getElementById("zoomAuto")
           .addEventListener("click", (e) => pdfViewZoomAuto());
+          
         function normalizeWheelEventDirection(evt) {
           let delta = Math.hypot(evt.deltaX, evt.deltaY);
           const angle = Math.atan2(evt.deltaY, evt.deltaX);
