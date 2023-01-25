@@ -206,6 +206,7 @@
         await renderDocument();
       }
 
+
       function renderPage(currentPdf, pageNumber, canvas, width, annotations) {
         currentPdf.getPage(pageNumber).then(function (page) {
           const W = page.view[2];
@@ -526,7 +527,6 @@
         document
           .getElementById("zoomAuto")
           .addEventListener("click", (e) => pdfViewZoomAuto());
-
         function normalizeWheelEventDirection(evt) {
           let delta = Math.hypot(evt.deltaX, evt.deltaY);
           const angle = Math.atan2(evt.deltaY, evt.deltaX);
@@ -578,8 +578,29 @@
           }
         });
 
-        currentScale = getScale();
+        async function pdfViewMove(event) {
+          let x = event.clientX;
+          let y = event.clientY;
+          let mouseMoveHandler = (event) => {
+            const f = getScale();
+            const dy = (y - event.clientY) / f;
+            const dx = (x - event.clientX) / f;
+            viewerContainer.scrollTo({
+              left: viewerContainer.scrollLeft + dx,
+              top: viewerContainer.scrollTop + dy
+            });
+          }
+          let mouseUpHandler = () => {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+          }
+          document.addEventListener('mousemove', mouseMoveHandler);
+          document.addEventListener('mouseup', mouseUpHandler);
+        }
+        const viewerContainer = document.querySelector("#viewerContainer")
+        viewerContainer.addEventListener("mousedown", pdfViewMove)
 
+        currentScale = getScale();
         Zotero.PDFPreview.preview._initPromise &&
           Zotero.PDFPreview.preview._initPromise.resolve();
       });

@@ -393,6 +393,7 @@ class AddonEvents extends AddonModule {
       },
       "*"
     );
+    
   }
 }
 
