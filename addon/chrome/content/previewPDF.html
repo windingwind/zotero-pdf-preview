@@ -579,18 +579,17 @@
         });
 
         currentScale = getScale();
-
+        let x, y
         async function pdfViewMove(event) {
-          let x = event.clientX;
-          let y = event.clientY;
+          x = event.clientX;
+          y = event.clientY;
           let mouseMoveHandler = (event) => {
             const f = currentScale;
-            const dy = (y - event.clientY) / f;
-            const dx = (x - event.clientX) / f;
-            viewerContainer.scrollTo({
-              left: viewerContainer.scrollLeft + dx,
-              top: viewerContainer.scrollTop + dy
-            });
+            const dy = (y - event.clientY);
+            const dx = (x - event.clientX);
+            x = event.clientX;
+            y = event.clientY;
+            viewerContainer.scrollBy(dx, dy);
           }
           let mouseUpHandler = () => {
             document.removeEventListener('mousemove', mouseMoveHandler);
