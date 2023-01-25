@@ -578,11 +578,13 @@
           }
         });
 
+        currentScale = getScale();
+
         async function pdfViewMove(event) {
           let x = event.clientX;
           let y = event.clientY;
           let mouseMoveHandler = (event) => {
-            const f = getScale();
+            const f = currentScale;
             const dy = (y - event.clientY) / f;
             const dx = (x - event.clientX) / f;
             viewerContainer.scrollTo({
@@ -600,7 +602,7 @@
         const viewerContainer = document.querySelector("#viewerContainer")
         viewerContainer.addEventListener("mousedown", pdfViewMove)
 
-        currentScale = getScale();
+        
         Zotero.PDFPreview.preview._initPromise &&
           Zotero.PDFPreview.preview._initPromise.resolve();
       });
