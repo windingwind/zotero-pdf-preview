@@ -27,7 +27,7 @@
   "homepage": "https://github.com/windingwind/zotero-pdf-preview#readme",
   "dependencies": {
     "compressing": "^1.5.1",
-    "esbuild": "^0.14.34",
+    "esbuild": "^0.17.10",
     "replace-in-file": "^6.3.2"
   },
   "devDependencies": {
