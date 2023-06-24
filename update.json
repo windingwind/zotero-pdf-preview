@@ -4,16 +4,7 @@
       "updates": [
         {
           "version": "0.3.8",
-          "update_link": "https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-addon-template.xpi",
-          "applications": {
-            "gecko": {
-              "strict_min_version": "60.0"
-            }
-          }
-        },
-        {
-          "version": "0.3.8",
-          "update_link": "https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-addon-template.xpi",
+          "update_link": "https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-pdf-preview.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999"

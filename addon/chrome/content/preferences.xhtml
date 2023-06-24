@@ -1,89 +1,85 @@
+<linkset>
+  <html:link rel="localization" href="__addonRef__-preferences.ftl" />
+</linkset>
 <vbox id="zotero-prefpane-__addonRef__">
   <groupbox>
-    <label><html:h2>Preview Settings</html:h2></label>
+    <label><html:h2 data-l10n-id="pdfpreview-pref-title"></html:h2></label>
     <hbox>
       <checkbox
-        preference="extensions.zotero.__addonRef__.enableSplit"
-        label="&zotero.__addonRef__.pref.enableSplit.label;"
+        data-l10n-id="pdfpreview-pref-enableSplit"
+        preference="__prefsPrefix__.enableSplit"
       />
-      <radiogroup
-        preference="extensions.zotero.__addonRef__.splitType"
-        orient="horizontal"
-      >
+      <radiogroup preference="__prefsPrefix__.splitType" orient="horizontal">
         <radio
-          label="&zotero.__addonRef__.pref.splitBefore.label;"
+          data-l10n-id="pdfpreview-pref-splitBefore"
           value="before"
         ></radio>
-        <radio
-          label="&zotero.__addonRef__.pref.splitAfter.label;"
-          value="after"
-        ></radio>
+        <radio data-l10n-id="pdfpreview-pref-splitAfter" value="after"></radio>
       </radiogroup>
     </hbox>
     <checkbox
-      preference="extensions.zotero.__addonRef__.enableTab"
-      label="&zotero.__addonRef__.pref.enableTab.label;"
+      data-l10n-id="pdfpreview-pref-enableTab"
+      preference="__prefsPrefix__.enableTab"
     />
     <hbox>
       <checkbox
-        preference="extensions.zotero.__addonRef__.showToolInSplit"
-        label="&zotero.__addonRef__.pref.showToolInSplit.label;"
+        data-l10n-id="pdfpreview-pref-showToolInSplit"
+        preference="__prefsPrefix__.showToolInSplit"
       />
       <checkbox
-        preference="extensions.zotero.__addonRef__.showToolInTab"
-        label="&zotero.__addonRef__.pref.showToolInTab.label;"
+        data-l10n-id="pdfpreview-pref-showToolInTab"
+        preference="__prefsPrefix__.showToolInTab"
       />
     </hbox>
     <checkbox
-      preference="extensions.zotero.__addonRef__.showAnnotations"
-      label="&zotero.__addonRef__.pref.showAnnotations.label;"
+      data-l10n-id="pdfpreview-pref-showAnnotations"
+      preference="__prefsPrefix__.showAnnotations"
     />
     <checkbox
-      preference="extensions.zotero.__addonRef__.showHover"
-      label="&zotero.__addonRef__.pref.showHover.label;"
+      data-l10n-id="pdfpreview-pref-showHover"
+      preference="__prefsPrefix__.showHover"
     />
     <checkbox
-      preference="extensions.zotero.__addonRef__.enableJump"
-      label="&zotero.__addonRef__.pref.enableJump.label;"
+      data-l10n-id="pdfpreview-pref-enableJump"
+      preference="__prefsPrefix__.enableJump"
     />
     <checkbox
-      preference="extensions.zotero.__addonRef__.darkMode"
-      label="&zotero.__addonRef__.pref.darkMode.label;"
+      data-l10n-id="pdfpreview-pref-darkMode"
+      preference="__prefsPrefix__.darkMode"
     />
     <hbox>
-      <html:label for="zotero-prefpane-__addonRef__-previewPageNum"
-        >&zotero.__addonRef__.pref.previewPageNumBefore.label;</html:label
-      >
+      <html:label
+        for="zotero-prefpane-__addonRef__-previewPageNum"
+        data-l10n-id="pdfpreview-pref-previewPageNumBefore"
+      ></html:label>
       <html:input
         type="text"
         id="zotero-prefpane-__addonRef__-previewPageNum"
-        preference="extensions.zotero.__addonRef__.previewPageNum"
+        preference="__prefsPrefix__.previewPageNum"
       ></html:input>
       <html:label
-        >&zotero.__addonRef__.pref.previewPageNumAfter.label;</html:label
-      >
+        data-l10n-id="pdfpreview-pref-previewPageNumAfter"
+      ></html:label>
     </hbox>
     <hbox>
-      <html:label for="zotero-prefpane-__addonRef__-previewTabName"
-        >&zotero.__addonRef__.pref.previewTabNameBefore.label;</html:label
-      >
+      <html:label
+        for="zotero-prefpane-__addonRef__-previewTabName"
+        data-l10n-id="pdfpreview-pref-previewTabNameBefore"
+      ></html:label>
       <html:input
         type="text"
         id="zotero-prefpane-__addonRef__-previewTabName"
-        preference="extensions.zotero.__addonRef__.previewTabName"
+        preference="__prefsPrefix__.previewTabName"
       ></html:input>
       <html:label
-        >&zotero.__addonRef__.pref.previewTabNameAfter.label;</html:label
-      >
+        data-l10n-id="pdfpreview-pref-previewTabNameAfter"
+      ></html:label>
     </hbox>
-    <label
-      value="&zotero.__addonRef__.help.feedback.label;"
-      class="zotero-text-link"
-      href="__homepage__"
-    ></label>
     <hbox>
-      <label value="&zotero.__addonRef__.help.version.label;" />
-      <label value="&zotero.__addonRef__.help.releasetime.label;" />
+      <label
+        data-l10n-id="pdfpreview-help-info"
+        data-l10n-args='{"time": "__buildTime__","name": "__addonName__","version":"__buildVersion__"}'
+      ></label>
     </hbox>
   </groupbox>
 </vbox>

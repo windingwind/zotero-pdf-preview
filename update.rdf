@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-  <rdf:Description rdf:about="urn:mozilla:extension:pdfpreview@windingwind.com">
+  <rdf:Description rdf:about="urn:mozilla:extension:__addonID__">
     <em:updates>
       <rdf:Seq>
         <rdf:li>
           <rdf:Description>
-            <em:version>0.3.8</em:version>
+            <em:version>0.3.7</em:version>
             <em:targetApplication>
               <rdf:Description>
                 <em:id>zotero@chnm.gmu.edu</em:id>
-                <em:minVersion>6.999</em:minVersion>
+                <em:minVersion>5.999</em:minVersion>
                 <em:maxVersion>*</em:maxVersion>
-                <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-addon-template.xpi</em:updateLink>
+                <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/download/0.3.7/zotero-pdf-preview.xpi</em:updateLink>
               </rdf:Description>
             </em:targetApplication>
             <em:targetApplication>
               <rdf:Description>
                 <em:id>juris-m@juris-m.github.io</em:id>
-                <em:minVersion>6.999</em:minVersion>
+                <em:minVersion>5.999</em:minVersion>
                 <em:maxVersion>*</em:maxVersion>
-                <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-addon-template.xpi</em:updateLink>
+                <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/download/0.3.7/zotero-pdf-preview.xpi</em:updateLink>
               </rdf:Description>
             </em:targetApplication>
           </rdf:Description>

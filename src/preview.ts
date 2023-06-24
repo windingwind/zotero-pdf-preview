@@ -1,97 +1,93 @@
-import PDFPreview from "./addon";
-import { PreviewType } from "./base";
-import AddonModule from "./module";
+import { getPref } from "./utils/prefs";
+import {
+  Annotation,
+  PreviewType,
+  RELOAD_COUNT,
+  getContainerId,
+  isDev,
+} from "./utils/type";
+import { waitUtilAsync } from "./utils/wait";
 
-class Annotation {
-  type: string;
-  position: any;
-  color: string;
-  pageLabel: string;
-  constructor(type, position, color, pageLabel) {
-    this.type = type;
-    this.position = position;
-    this.color = color;
-    this.pageLabel = pageLabel;
+export { preview };
+
+/**
+ * This function update item and decide whether to render preview
+ * @param forceRender
+ */
+async function updatePreviewItem(forceRender = false) {
+  const items = ZoteroPane.getSelectedItems();
+  if (items.length !== 1) {
+    // Do not preview multiple selection
+    return false;
   }
+  let item: Zotero.Item | false = items[0];
+  if (item.isRegularItem()) {
+    item = await items[0].getBestAttachment();
+  }
+  isDev() && ztoolkit.log(items, item);
+  if (!item || !item.isPDFAttachment()) {
+    addon.hooks.onCollapse(true, true);
+    // Do not preview non-pdf item
+    return false;
+  } else {
+    if (!addon.data.state.splitCollapsed) {
+      addon.hooks.onCollapse(false, true);
+    }
+  }
+  if (!forceRender && addon.data.state.item?.id === item.id) {
+    ztoolkit.log("Preview skipped for same item");
+    addon.data.state.skipRendering = true;
+  } else {
+    addon.data.state.skipRendering = false;
+  }
+  addon.data.state.item = item;
+  return true;
 }
 
-const RELOAD_COUNT = 10;
-
-class AddonPreview extends AddonModule {
-  item: Zotero.Item;
-  lastType: PreviewType;
-  _initPromise: any;
-  _loadingPromise: any;
-  _skipRendering: boolean;
-  _previewCounts: any;
-
-  constructor(parent: PDFPreview) {
-    super(parent);
-    this._previewCounts = {};
-    let type = PreviewType.info;
-    while (type !== PreviewType.null) {
-      this._previewCounts[type] = 0;
-      type++;
-    }
+async function preview(type: PreviewType, force = false) {
+  if (
+    getPref(type === PreviewType.preview ? "enableTab" : "enableSplit") ===
+    false
+  ) {
+    return;
   }
 
-  public async updatePreviewItem(alwaysUpdate: boolean = false) {
-    let items = ZoteroPane.getSelectedItems();
-    if (items.length !== 1) {
-      return false;
-    }
-    let item: Zotero.Item = items[0];
-    if (item.isRegularItem()) {
-      item = await items[0].getBestAttachment();
-    }
-    this._Addon.Utils.Tool.log(items, item);
-    if (!item || !item.isPDFAttachment()) {
-      this._Addon.events.setSplitCollapsed(true, true);
-      return false;
-    } else {
-      if (!this._Addon.events.previewSplitCollapsed) {
-        this._Addon.events.setSplitCollapsed(false, true);
-      }
-    }
-    if (!alwaysUpdate && this.item && item.id === this.item.id) {
-      this._Addon.Utils.Tool.log("Preview skipped for same item");
-      this._skipRendering = true;
-    } else {
-      this._skipRendering = false;
-    }
-    this.item = item;
-    return this.item;
+  // Reload the preview container if it has been rendered for RELOAD_COUNT times
+  if (addon.data.state.previewCounts[type] >= RELOAD_COUNT) {
+    addon.data.state.previewCounts[type] = 0;
+    await addon.hooks.onInitContainer(
+      type,
+      type === PreviewType.preview ? "after" : addon.data.state.splitPosition
+    );
+    force = true;
+  }
+  await addon.data.state.initPromise.promise;
+  const iframe = document.querySelector(
+    `#${getContainerId(type, addon.data.state.splitPosition)}-iframe`
+  ) as HTMLIFrameElement | null;
+  if (!iframe) {
+    return;
   }
 
-  public getPreviewIds(type: PreviewType) {
-    let iframeId = "";
-    let containerId = "";
-    const splitType: "before" | "after" = Zotero.Prefs.get(
-      "pdfpreview.splitType"
-    ) as "before" | "after";
-    if (type === PreviewType.info) {
-      iframeId = `pdf-preview-info-${splitType}-container`;
-      containerId = `pdf-preview-infosplit-${splitType}`;
-    } else if (type === PreviewType.preview) {
-      iframeId = `pdf-preview-preview-container`;
-      containerId = "pdf-preview-tabpanel";
-    } else if (type === PreviewType.attachment) {
-      iframeId = `pdf-preview-attachment-${splitType}-container`;
-      containerId = `pdf-preview-attachment-${splitType}`;
-    }
-    return { iframeId, containerId };
-  }
+  await waitUtilAsync(() => iframe.contentDocument?.readyState === "complete");
 
-  public getPreviewElements(type: PreviewType) {
-    const { iframeId, containerId } = this.getPreviewIds(type);
-    return {
-      iframe: document.getElementById(iframeId) as HTMLIFrameElement,
-      container: document.getElementById(containerId),
-    };
-  }
+  /*
+  Force when:
+  1. preview type change. user changed the container
+  2. item change. user changed the item
+  3. force. user clicked the preview button
+  */
+  await updatePreviewItem(
+    type !== addon.data.state.lastType ||
+      // @ts-ignore
+      addon.data.state.item?.id !== iframe.contentWindow?.cachedData?.itemID ||
+      force
+  );
 
-  public updateWidth(type: PreviewType) {
-    const iframe = this.getPreviewElements(type).iframe;
+  if (addon.data.state.item && !addon.data.state.skipRendering) {
+    await addon.data.state.loadingPromise?.promise;
+
+    iframe.hidden = false;
     // Reset the width to allow parentElement to shrink
     iframe.style.width = "100px";
     const width = iframe.parentElement?.clientWidth;
@@ -99,108 +95,36 @@ class AddonPreview extends AddonModule {
       return;
     }
     iframe.style.width = `${width}px`;
+
+    ztoolkit.log("do preview");
+    addon.data.state.lastType = type;
     iframe.contentWindow?.postMessage(
       {
-        type: "updateWidth",
+        type: "renderPreview",
+        itemID: addon.data.state.item.id,
         width: width - 40,
+        annotations: getPref("showAnnotations")
+          ? addon.data.state.item
+              .getAnnotations()
+              .map(
+                (i) =>
+                  new Annotation(
+                    i.annotationType,
+                    JSON.parse(i.annotationPosition),
+                    i.annotationColor,
+                    i.annotationPageLabel
+                  )
+              )
+          : [],
+        previewType: type,
       },
       "*"
     );
-  }
-
-  public async preview(type: PreviewType, force: boolean = false) {
-    if (
-      Zotero.Prefs.get(
-        `pdfpreview.${
-          type === PreviewType.preview ? "enableTab" : "enableSplit"
-        }`
-      ) === false
-    ) {
-      return;
-    }
-
-    if (this._previewCounts[type] >= RELOAD_COUNT) {
-      this._previewCounts[type] = 0;
-      await this._Addon.events.initPreview(type);
-      this._Addon.events.doPreview(true);
-      return;
-    }
-    await this._Addon.preview._initPromise;
-    let { iframe } = this.getPreviewElements(type);
-
-    let t = 0;
-    while (t < 500 && iframe.contentDocument.readyState !== "complete") {
-      await Zotero.Promise.delay(10);
-      t += 10;
-    }
-
-    let item = await this.updatePreviewItem(
-      type !== this.lastType ||
-        // @ts-ignore
-        this.item?.id !== iframe.contentWindow.cachedData.itemID ||
-        force
-    );
-    this._Addon.Utils.Tool.log(item);
-    if (force && !item) {
-      item = this.item;
-    }
-
-    if (item) {
-      if (this._loadingPromise) {
-        await this._loadingPromise.promise;
-      }
-      if (!iframe) {
-      }
-      iframe.hidden = false;
-      // Reset the width to allow parentElement to shrink
-      iframe.style.width = "100px";
-      const width = iframe.parentElement?.clientWidth;
-      if (!width) {
-        return;
-      }
-      iframe.style.width = `${width}px`;
-      await this._initPromise.promise;
-
-      if ((item as unknown as Zotero.Item).id !== this.item.id) {
-        // New preview triggered. Stop current one.
-        return;
-      }
-      if (this._skipRendering) {
-        iframe.hidden = false;
-        return;
-      }
-      this._Addon.Utils.Tool.log("do preview");
-      this.lastType = type;
-      iframe.contentWindow?.postMessage(
-        {
-          type: "renderPreview",
-          itemID: this.item.id,
-          width: width - 40,
-          annotations: Zotero.Prefs.get("pdfpreview.showAnnotations")
-            ? item
-                .getAnnotations()
-                .map(
-                  (i) =>
-                    new Annotation(
-                      i.annotationType,
-                      JSON.parse(i.annotationPosition),
-                      i.annotationColor,
-                      i.annotationPageLabel
-                    )
-                )
-            : [],
-          previewType: type,
-        },
-        "*"
-      );
-      iframe.hidden = false;
-    } else {
-      this._Addon.Utils.Tool.log("hide preview");
-      if (iframe) {
-        iframe.hidden = true;
-      }
-    }
+    iframe.hidden = false;
+  } else {
+    // ztoolkit.log("hide preview");
+    // if (iframe) {
+    //   iframe.hidden = true;
+    // }
   }
 }
-
-export default AddonPreview;

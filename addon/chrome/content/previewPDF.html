@@ -29,10 +29,11 @@
         display: block;
         height: inherit;
         overflow-y: scroll;
+        text-align: center;
       }
       .viewerCanvas {
-        display: block;
-        margin: var(--page-margin) !important;
+        margin-left: 5px;
+        margin-right: 5px;
       }
       .allowFocus:hover {
         box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
@@ -111,7 +112,6 @@
 
     <script>
       Components.utils.import("resource://gre/modules/osfile.jsm");
-
       var cachedData = {
         itemID: -1,
         pdfDocument: undefined,
@@ -121,7 +121,7 @@
       };
       var noteIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="__size__" height="__size__" viewBox="0 0 24 24"><polygon fill="__color__" points="0.5 0.5 23.5 0.5 23.5 23.5 11.5 23.5 0.5 12.5 0.5 0.5"></polygon><polygon points="0.5 12.5 11.5 12.5 11.5 23.5 0.5 12.5" fill="#fff" opacity="0.4"></polygon><path d="M0,0V12.707L11.293,24H24V0ZM11,22.293,1.707,13H11ZM23,23H12V12H1V1H23Z"></path></svg>`;
       var MIN_SCALE = 0.25;
-      var DEFAULT_SCALE_DELTA = 1.1;
+      var DEFAULT_SCALE_DELTA = 1.05;
       var MAX_SCALE = 10.0;
       var DEFAULT_SCALE_VALUE = "auto";
       var currentScale = 1;
@@ -130,12 +130,13 @@
 
       function updateToolbar(previewType) {
         cachedData.previewType = previewType;
-        const viewerContainer = document.getElementById("viewerContainer");
+        const viewerContainer = document.querySelector("#viewerContainer");
         const toolbar = document.querySelector(".toolbar");
         const showToolbar =
           ((previewType === 1 || previewType === 3) &&
-            Zotero.Prefs.get("pdfpreview.showToolInSplit")) ||
-          (previewType === 2 && Zotero.Prefs.get("pdfpreview.showToolInTab"));
+            Zotero.Prefs.get("__prefsPrefix__.showToolInSplit", true)) ||
+          (previewType === 2 &&
+            Zotero.Prefs.get("__prefsPrefix__.showToolInTab", true));
         toolbar.style.visibility = showToolbar ? "visible" : "hidden";
         toolbar.style.height = showToolbar ? "32px" : "0";
         viewerContainer.style.height = showToolbar
@@ -150,15 +151,21 @@
       }
 
       function getScale() {
-        return parseFloat(Zotero.Prefs.get("pdfpreview.previewScale"));
+        return parseFloat(
+          Zotero.Prefs.get("__prefsPrefix__.previewScale", true)
+        );
       }
 
       function setScale() {
-        Zotero.Prefs.set("pdfpreview.previewScale", String(currentScale));
+        Zotero.Prefs.set(
+          "__prefsPrefix__.previewScale",
+          String(currentScale),
+          true
+        );
       }
 
       async function pdfViewZoomIn(ticks) {
-        const viewerContainer = document.getElementById("viewerContainer");
+        const viewerContainer = document.querySelector("#viewerContainer");
         let newScrollLeft = viewerContainer.scrollLeft / currentScale;
         let newScrollTop = viewerContainer.scrollTop / currentScale;
         var newScale = currentScale;
@@ -177,7 +184,7 @@
       }
 
       async function pdfViewZoomOut(ticks) {
-        const viewerContainer = document.getElementById("viewerContainer");
+        const viewerContainer = document.querySelector("#viewerContainer");
         let newScrollLeft = viewerContainer.scrollLeft / currentScale;
         let newScrollTop = viewerContainer.scrollTop / currentScale;
         var newScale = currentScale;
@@ -196,7 +203,7 @@
       }
 
       async function pdfViewZoomAuto() {
-        const viewerContainer = document.getElementById("viewerContainer");
+        const viewerContainer = document.querySelector("#viewerContainer");
         let newScrollLeft = viewerContainer.scrollLeft / currentScale;
         let newScrollTop = viewerContainer.scrollTop / currentScale;
         currentScale = 1;
@@ -226,14 +233,14 @@
           canvas.height = viewport.height * ratio;
           canvas.style.width = viewport.width + "px";
           canvas.style.height = viewport.height + "px";
-          if (Zotero.Prefs.get("pdfpreview.showHover")) {
+          if (Zotero.Prefs.get("__prefsPrefix__.showHover", true)) {
             canvas.className += " allowFocus";
           }
-          if (Zotero.Prefs.get("pdfpreview.enableJump")) {
+          if (Zotero.Prefs.get("__prefsPrefix__.enableJump", true)) {
             canvas.addEventListener("dblclick", async (e) => {
               // Code from zotero link handler
               let opened = false;
-              const item = Zotero.PDFPreview.preview.item;
+              const item = Zotero.PDFPreview.data.state.item;
               try {
                 opened = await Zotero.OpenPDF.openToPage(item, pageNumber);
               } catch (e) {
@@ -266,8 +273,8 @@
                 if (annotationData.length === 0) {
                   return;
                 }
-                const annotationLayer = document.getElementById(
-                  `annotation-layer-${pageNumber}`
+                const annotationLayer = document.querySelector(
+                  `#annotation-layer-${pageNumber}`
                 );
                 annotationLayer.width = viewport.width * ratio;
                 annotationLayer.height = viewport.height * ratio;
@@ -367,21 +374,23 @@
 
       async function renderDocument(id) {
         id = id || cachedData.itemID;
-        // let item = Zotero.PDFPreview.preview.item;
         // Block other possible renders
-        Zotero.PDFPreview.preview._loadingPromise = Zotero.Promise.defer();
-        const viewerContainer = document.getElementById("viewerContainer");
-        if (Zotero.Prefs.get("pdfpreview.darkMode")) {
+        Zotero.PDFPreview.data.state.loadingPromise = Zotero.Promise.defer();
+        const viewerContainer = document.querySelector("#viewerContainer");
+        if (Zotero.Prefs.get("__prefsPrefix__.darkMode", true)) {
           viewerContainer.style.filter = "invert(100%)";
         } else {
           viewerContainer.style.removeProperty("filter");
         }
 
         try {
-          viewer = document.getElementById("viewerContainer");
+          viewer = document.querySelector("#viewerContainer");
           viewer.innerHTML = "";
           let pages = [];
-          const pageNumber = Zotero.Prefs.get("pdfpreview.previewPageNum");
+          const pageNumber = Zotero.Prefs.get(
+            "__prefsPrefix__.previewPageNum",
+            true
+          );
           const totalNumber = cachedData.pdfDocument.numPages;
           if (pageNumber.includes(",") || pageNumber.includes(":")) {
             pageNumber.split(",").forEach((s) => {
@@ -467,10 +476,10 @@
               currentAnnotations
             );
           }
-          Zotero.PDFPreview.preview._loadingPromise.resolve();
+          Zotero.PDFPreview.data.state.loadingPromise.resolve();
         } catch (e) {
-          Zotero.PDFPreview.preview._loadingPromise.resolve();
-          console.warn(e);
+          Zotero.PDFPreview.data.state.loadingPromise.resolve();
+          console.debug(e);
         }
       }
 
@@ -483,7 +492,7 @@
             // and increase the previewCount to let the plugin decide
             // when to destroy the iframe
             // because the buffers are not free even after the destroy()
-            Zotero.PDFPreview.preview._previewCounts[
+            Zotero.PDFPreview.data.state.previewCounts[
               cachedData.previewType
             ] += 1;
             cachedData.pdfDocument && cachedData.pdfDocument.destroy();
@@ -518,13 +527,13 @@
           "resource://zotero/pdf-reader/pdf.worker.js";
 
         document
-          .getElementById("zoomOut")
+          .querySelector("#zoomOut")
           .addEventListener("click", (e) => pdfViewZoomOut(1));
         document
-          .getElementById("zoomIn")
+          .querySelector("#zoomIn")
           .addEventListener("click", (e) => pdfViewZoomIn(1));
         document
-          .getElementById("zoomAuto")
+          .querySelector("#zoomAuto")
           .addEventListener("click", (e) => pdfViewZoomAuto());
 
         function normalizeWheelEventDirection(evt) {
@@ -534,7 +543,7 @@
             // All that is left-up oriented has to change the sign.
             delta = -delta;
           }
-          return delta;
+          return delta / 5;
         }
 
         const zoom = async () => {
@@ -580,8 +589,8 @@
 
         currentScale = getScale();
 
-        Zotero.PDFPreview.preview._initPromise &&
-          Zotero.PDFPreview.preview._initPromise.resolve();
+        Zotero.PDFPreview.data.state.initPromise &&
+          Zotero.PDFPreview.data.state.initPromise.resolve();
       });
     </script>
   </body>

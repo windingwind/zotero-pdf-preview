@@ -1,0 +1,14 @@
+pref("__prefsPrefix__.enableSplit", true);
+pref("__prefsPrefix__.splitType", "after");
+pref("__prefsPrefix__.splitHeight", "400");
+pref("__prefsPrefix__.enableTab", true);
+pref("__prefsPrefix__.showAnnotations", true);
+pref("__prefsPrefix__.showHover", true);
+pref("__prefsPrefix__.showToolInSplit", true);
+pref("__prefsPrefix__.showToolInTab", true);
+pref("__prefsPrefix__.enableJump", true);
+pref("__prefsPrefix__.darkMode", false);
+pref("__prefsPrefix__.previewPageNum", "10");
+pref("__prefsPrefix__.splitHeight", "400");
+pref("__prefsPrefix__.previewScale", "1.0");
+pref("__prefsPrefix__.previewTabName", "Preview");
