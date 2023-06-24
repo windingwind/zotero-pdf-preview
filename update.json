@@ -3,7 +3,7 @@
     "pdfpreview@windingwind.com": {
       "updates": [
         {
-          "version": "0.3.8",
+          "version": "1.0.0-0",
           "update_link": "https://github.com/windingwind/zotero-pdf-preview/releases/latest/download/zotero-pdf-preview.xpi",
           "applications": {
             "zotero": {
