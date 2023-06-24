@@ -1,28 +1,39 @@
 # Zotero PDF Preview
 
+[![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
+
 ![teaser](./image/README/teaser.gif)
 
 Preview PDF attachments in the library view.
 
 Fast & easy. Do not require any third-party softwares.
 
-# Quick Start Guide
+## 🧩 Outline
 
-## Install
+[👋 Install](#👋-install)
+
+[😎 Quick start](#😎-quick-start)
+
+[🔧 Development](#🔧-development)
+
+[🔎 My Zotero Plugins](#🔎-my-zotero-plugins)
+
+[💰 Sponsor Me](#💰-sponsor-me)
+
+## 👋 Install
 
 - Download the latest release (.xpi file) from the [Releases Page](https://github.com/windingwind/zotero-pdf-preview/releases)_Note_ If you're using Firefox as your browser, right-click the `.xpi` and select "Save As.."
 - In Zotero click `Tools` in the top menu bar and then click `Addons`
 - Go to the Extensions page and then click the gear icon in the top right.
 - Select `Install Add-on from file`.
 - Browse to where you downloaded the `.xpi` file and select it.
-- Restart Zotero, by clicking `restart now` in the extensions list where the
-  Zotero PDF Preview plugin is now listed.
+- Finish!
 
-## Usage
+## 😎 Quick start
 
 Preview can be found in the right side panel of Zotero's main window. You can preview items in either the top/bottom of the info pane or the preview pane. See [Settings](#settings) to customize your preview position.
 
-## Shortcuts
+### Shortcuts
 
 To show/hide the preview in info pane, use shortcut `P` or drag/click the toggel bar.
 
@@ -30,7 +41,7 @@ To zoom in or zoom out, hold `ctrl/cmd` and scroll, or `ctrl/cmd and +/-`;
 
 To reset zoom, use `ctrl/cmd + 0`.
 
-## Settings
+### Settings
 
 Find settings here: Menubar -> Edit -> Preferences -> Preview
 
@@ -41,7 +52,6 @@ Find settings here: Menubar -> Edit -> Preferences -> Preview
 | Preview Position                           | Preview position in the Info Tab                                                                                     | `bottom`      |
 | Preview in 'Preview' Tab                   | Enable show the preview in a new tab of right sidebar.                                                               | `true`        |
 | Show Toolbar in Info Tab/Preview Tab       | Enable show the toolbar there.                                                                                       | `true`        |
-| Auto Focus Preview Tab                     | Enable to focus the preview tab automatically when you select a valid preview item.                                  | `false`       |
 | Show Annotations                           | Enable to show annotations of the PDF files. May slow down the preview speed.                                        | `false`       |
 | Show Hovered Page Style                    | Enable extra style of the hovered page: box shadow and hand cursor.                                                  | `true`        |
 | Double-click Preview Page to Open/Jump PDF | Enable double-click to open/jump to the selected page of PDF.                                                        | `true`        |
@@ -116,69 +126,32 @@ Supported Commands:
 
   </details>
 
-## Development & Contributing
+## 🔧 Development
 
-This add-on is built on the [zotero-addon-template](https://github.com/windingwind/zotero-addon-template).
+This plugin is built based on the [Zotero Plugin Template](https://github.com/windingwind/zotero-plugin-template). See the setup and debug details there.
 
-### Build
+To startup, run
 
-```shell
-# A release-it command: version increase, npm run build, git push, and GitHub release
-# You need to set the environment variable GITHUB_TOKEN https://github.com/settings/tokens
-# release-it: https://github.com/release-it/release-it
-npm run release
+```bash
+git clone https://github.com/windingwind/zotero-better-notes.git
+cd zotero-better-notes
+npm install
+npm run build
 ```
 
-Alternatively, build it directly using build.js: `npm run build`
+The plugin is built to `./builds/*.xpi`.
 
-### Build Steps
+## 🔔 Disclaimer
 
-1. Clean `./builds`
-2. Copy `./addon` to `./builds`
-3. Esbuild to `./builds/addon/chrome/content/scripts`
-4. Replace `__buildVersion__` and `__buildTime__` in `./builds/addon`
-5. Zip the `./builds/addon` to `./builds/*.xpi`
+Use this code under AGPL. No warranties are provided. Keep the laws of your locality in mind!
 
-### Debug
+## 🔎 My Zotero Plugins
 
-1. Copy zotero command line config file. Modify the commands.
+- [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate): PDF translation for Zotero
+- [zotero-pdf-preview](https://github.com/windingwind/zotero-tag): PDF preview for Zotero
+- [zotero-tag](https://github.com/windingwind/zotero-tag): Automatically tag items/Batch tagging
 
-```sh
-cp zotero-cmd-default.json zotero-cmd.json
-```
-
-2. Setup addon development environment following this [link](https://www.zotero.org/support/dev/client_coding/plugin_development#setting_up_a_plugin_development_environment).
-
-3. Build addon and restart Zotero with this npm command.
-
-```sh
-npm run restart
-```
-
-You can also debug code in these ways:
-
-- Test code segments in Tools->Developer->Run Javascript;
-- Debug output with `Zotero.debug()`. Find the outputs in Help->Debug Output Logging->View Output;
-- UI debug. Zotero is built on the Firefox XUL framework. Debug XUL UI with software like [XUL Explorer](https://udn.realityripple.com/docs/Archive/Mozilla/XUL_Explorer).
-  > XUL Documents:  
-  > https://www.xul.fr/tutorial/  
-  > http://www.xulplanet.com/
-
-## Disclaimer
-
-Use this code under AGPL (open source required). No warranties are provided. Keep the laws of your locality in mind!
-
-Part of the code of this repo refers to other open-source projects within the allowed scope.
-
-- [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate)
-
-## My Other Zotero Addons
-
-- [zotero-better-notes](https://github.com/windingwind/zotero-better-notes) Note enhancements for Zotero
-- [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate) PDF translation for Zotero 6
-- [zotero-tag](https://github.com/windingwind/zotero-tag) Automatically tag items/Batch tagging
-
-## Sponsor Me
+## 💰 Sponsor Me
 
 I'm windingwind, an active Zotero(https://www.zotero.org) plugin developer. Devoting to making reading papers easier.
 
