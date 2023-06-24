@@ -587,6 +587,27 @@
           }
         });
 
+        let x, y;
+        async function pdfViewDrag(event) {
+          x = event.clientX;
+          y = event.clientY;
+          let mouseMoveHandler = (event) => {
+            const dy = y - event.clientY;
+            const dx = x - event.clientX;
+            x = event.clientX;
+            y = event.clientY;
+            viewerContainer.scrollBy(dx, dy);
+          };
+          let mouseUpHandler = () => {
+            document.removeEventListener("mousemove", mouseMoveHandler);
+            document.removeEventListener("mouseup", mouseUpHandler);
+          };
+          document.addEventListener("mousemove", mouseMoveHandler);
+          document.addEventListener("mouseup", mouseUpHandler);
+        }
+        const viewerContainer = document.querySelector("#viewerContainer");
+        viewerContainer.addEventListener("mousedown", pdfViewDrag);
+
         currentScale = getScale();
 
         Zotero.PDFPreview.data.state.initPromise &&
