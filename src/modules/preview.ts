@@ -1,12 +1,12 @@
-import { getPref } from "./utils/prefs";
+import { getPref } from "../utils/prefs";
 import {
   Annotation,
   PreviewType,
   RELOAD_COUNT,
   getContainerId,
   isDev,
-} from "./utils/type";
-import { waitUtilAsync } from "./utils/wait";
+} from "../utils/type";
+import { waitUtilAsync } from "../utils/wait";
 
 export { preview };
 

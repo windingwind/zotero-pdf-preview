@@ -10,7 +10,7 @@ import {
   initPreviewResizeListener,
   initTabSelectListener,
 } from "./modules/listeners";
-import { preview } from "./preview";
+import { preview } from "./modules/preview";
 
 async function onStartup() {
   await Promise.all([
