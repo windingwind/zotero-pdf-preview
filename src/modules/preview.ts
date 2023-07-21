@@ -57,13 +57,13 @@ async function preview(type: PreviewType, force = false) {
     addon.data.state.previewCounts[type] = 0;
     await addon.hooks.onInitContainer(
       type,
-      type === PreviewType.preview ? "after" : addon.data.state.splitPosition
+      type === PreviewType.preview ? "after" : addon.data.state.splitPosition,
     );
     force = true;
   }
   await addon.data.state.initPromise.promise;
   const iframe = document.querySelector(
-    `#${getContainerId(type, addon.data.state.splitPosition)}-iframe`
+    `#${getContainerId(type, addon.data.state.splitPosition)}-iframe`,
   ) as HTMLIFrameElement | null;
   if (!iframe) {
     return;
@@ -79,9 +79,9 @@ async function preview(type: PreviewType, force = false) {
   */
   await updatePreviewItem(
     type !== addon.data.state.lastType ||
-      // @ts-ignore
+      // @ts-ignore cachedData is not a standard property
       addon.data.state.item?.id !== iframe.contentWindow?.cachedData?.itemID ||
-      force
+      force,
   );
 
   if (addon.data.state.item && !addon.data.state.skipRendering) {
@@ -112,13 +112,13 @@ async function preview(type: PreviewType, force = false) {
                     i.annotationType,
                     JSON.parse(i.annotationPosition),
                     i.annotationColor,
-                    i.annotationPageLabel
-                  )
+                    i.annotationPageLabel,
+                  ),
               )
           : [],
         previewType: type,
       },
-      "*"
+      "*",
     );
     iframe.hidden = false;
   } else {

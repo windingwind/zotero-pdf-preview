@@ -13,14 +13,14 @@ async function registerSplit(type: PreviewType) {
   switch (type) {
     case PreviewType.info: {
       await waitUtilAsync(() =>
-        Boolean(document.querySelector("#zotero-editpane-item-box"))
+        Boolean(document.querySelector("#zotero-editpane-item-box")),
       );
       zitembox = document.querySelector("#zotero-editpane-item-box") as XUL.Box;
       break;
     }
     case PreviewType.attachment: {
       await waitUtilAsync(() =>
-        Boolean(document.querySelector("#zotero-attachment-box"))
+        Boolean(document.querySelector("#zotero-attachment-box")),
       );
       zitembox = document.querySelector("#zotero-attachment-box") as XUL.Box;
       break;
@@ -62,12 +62,12 @@ async function registerSplit(type: PreviewType) {
                 addon.data.state.splitHeight = parseFloat(
                   doc
                     .querySelector(`#${boxBeforeId}`)
-                    ?.getAttribute("height") || "0"
+                    ?.getAttribute("height") || "0",
                 );
                 setSplitCollapsed(
                   doc
                     .querySelector(`#${splitterBeforeId}`)
-                    ?.getAttribute("state") === "collapsed"
+                    ?.getAttribute("state") === "collapsed",
                 );
               },
             },
@@ -75,7 +75,7 @@ async function registerSplit(type: PreviewType) {
         },
       ],
     },
-    zitembox
+    zitembox,
   );
 
   zitembox.after(
@@ -96,12 +96,12 @@ async function registerSplit(type: PreviewType) {
               listener: (e: Event) => {
                 addon.data.state.splitHeight = parseFloat(
                   doc.querySelector(`#${boxAfterId}`)?.getAttribute("height") ||
-                    "0"
+                    "0",
                 );
                 setSplitCollapsed(
                   doc
                     .querySelector(`#${splitterAfterId}`)
-                    ?.getAttribute("state") === "collapsed"
+                    ?.getAttribute("state") === "collapsed",
                 );
               },
             },
@@ -112,13 +112,13 @@ async function registerSplit(type: PreviewType) {
           id: boxAfterId,
         },
       ],
-    })
+    }),
   );
 }
 
 function setSplitCollapsed(
   collapsed: boolean | undefined = undefined,
-  quietly = false
+  quietly = false,
 ) {
   if (typeof collapsed === "undefined") {
     collapsed = !addon.data.state.splitCollapsed;
@@ -182,10 +182,10 @@ function updateSplit(type: PreviewType) {
   const hidden = !getPref("enableSplit");
   const position = addon.data.state.splitPosition || "after";
   const splitContainer = document.querySelector(
-    `#${getContainerId(type, position)}`
+    `#${getContainerId(type, position)}`,
   ) as XUL.Box;
   const splitSplitter = document.querySelector(
-    `#${getSplitterId(type, position)}`
+    `#${getSplitterId(type, position)}`,
   ) as XUL.Splitter;
   if (hidden) {
     splitContainer.setAttribute("height", "0");
@@ -194,7 +194,7 @@ function updateSplit(type: PreviewType) {
   } else {
     splitContainer.setAttribute(
       "height",
-      addon.data.state.splitHeight.toString()
+      addon.data.state.splitHeight.toString(),
     );
     splitContainer.style.removeProperty("visibility");
     splitSplitter.style.removeProperty("visibility");
@@ -204,10 +204,10 @@ function updateSplit(type: PreviewType) {
   const hiddenPosition: "before" | "after" =
     position === "before" ? "after" : "before";
   const hiddenContainer = document.querySelector(
-    `#${getContainerId(type, hiddenPosition)}`
+    `#${getContainerId(type, hiddenPosition)}`,
   ) as XUL.Box;
   const hiddenSplitter = document.querySelector(
-    `#${getSplitterId(type, hiddenPosition)}`
+    `#${getSplitterId(type, hiddenPosition)}`,
   ) as XUL.Splitter;
   hiddenContainer.setAttribute("height", "0");
   hiddenContainer.style.visibility = "collapse";

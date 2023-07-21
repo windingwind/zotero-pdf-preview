@@ -21,7 +21,7 @@ async function onStartup() {
   initLocale();
   ztoolkit.ProgressWindow.setIconURI(
     "default",
-    `chrome://${config.addonRef}/content/icons/favicon.png`
+    `chrome://${config.addonRef}/content/icons/favicon.png`,
   );
   registerPrefPane();
   registerPreviewTab();
@@ -79,7 +79,7 @@ async function onNotify(
   event: string,
   type: string,
   ids: Array<string | number>,
-  extraData: { [key: string]: any }
+  extraData: { [key: string]: any },
 ) {
   // You can add your code to the corresponding notify type
   ztoolkit.log("notify", event, type, ids, extraData);

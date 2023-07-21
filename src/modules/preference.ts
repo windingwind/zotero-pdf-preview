@@ -8,7 +8,7 @@ export function registerPrefPane() {
     label: getString("pref-title"),
     image: `chrome://${config.addonRef}/content/icons/favicon.png`,
     defaultXUL: true,
-    // @ts-ignore
+    // @ts-ignore helpURL is not defined but available
     helpURL: homepage,
   });
 }

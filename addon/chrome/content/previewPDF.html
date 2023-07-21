@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html dir="ltr" mozdisallowselectionprint>
   <head>
     <meta charset="utf-8" />
@@ -152,7 +152,7 @@
 
       function getScale() {
         return parseFloat(
-          Zotero.Prefs.get("__prefsPrefix__.previewScale", true)
+          Zotero.Prefs.get("__prefsPrefix__.previewScale", true),
         );
       }
 
@@ -160,7 +160,7 @@
         Zotero.Prefs.set(
           "__prefsPrefix__.previewScale",
           String(currentScale),
-          true
+          true,
         );
       }
 
@@ -274,7 +274,7 @@
                   return;
                 }
                 const annotationLayer = document.querySelector(
-                  `#annotation-layer-${pageNumber}`
+                  `#annotation-layer-${pageNumber}`,
                 );
                 annotationLayer.width = viewport.width * ratio;
                 annotationLayer.height = viewport.height * ratio;
@@ -316,7 +316,7 @@
                       rect[0] * totalScale,
                       (H - rect[3]) * totalScale,
                       (rect[2] - rect[0]) * totalScale,
-                      (rect[3] - rect[1]) * totalScale
+                      (rect[3] - rect[1]) * totalScale,
                     );
                   }
                 } else if (annot.type === "image") {
@@ -326,7 +326,7 @@
                       rect[0] * totalScale,
                       (H - rect[3]) * totalScale,
                       (rect[2] - rect[0]) * totalScale,
-                      (rect[3] - rect[1]) * totalScale
+                      (rect[3] - rect[1]) * totalScale,
                     );
                   }
                 } else if (annot.type === "note") {
@@ -336,7 +336,7 @@
                       _ctx.drawImage(
                         this,
                         rect[0] * totalScale,
-                        (H - rect[3]) * totalScale
+                        (H - rect[3]) * totalScale,
                       );
                     };
                     let str =
@@ -344,7 +344,7 @@
                       encodeURIComponent(
                         noteIcon
                           .replace(/__size__/g, 24 * totalScale)
-                          .replace(/__color__/g, annot.color)
+                          .replace(/__color__/g, annot.color),
                       );
                     img.src = str;
                   }
@@ -354,12 +354,12 @@
                     _ctx.beginPath();
                     _ctx.moveTo(
                       path[0] * totalScale,
-                      (H - path[1]) * totalScale
+                      (H - path[1]) * totalScale,
                     );
                     for (i = 2; i < path.length; i += 2) {
                       _ctx.lineTo(
                         path[i] * totalScale,
-                        (H - path[i + 1]) * totalScale
+                        (H - path[i + 1]) * totalScale,
                       );
                     }
                     _ctx.stroke();
@@ -389,7 +389,7 @@
           let pages = [];
           const pageNumber = Zotero.Prefs.get(
             "__prefsPrefix__.previewPageNum",
-            true
+            true,
           );
           const totalNumber = cachedData.pdfDocument.numPages;
           if (pageNumber.includes(",") || pageNumber.includes(":")) {
@@ -458,7 +458,7 @@
             }
             // pdf.js page index starts from 1
             const currentAnnotations = cachedData.appAnnotations.filter(
-              (annot) => annot.position.pageIndex === i - 1
+              (annot) => annot.position.pageIndex === i - 1,
             );
             console.log(cachedData.appAnnotations, currentAnnotations);
             const canvasLayer = document.createElement("canvas");
@@ -473,7 +473,7 @@
               i,
               canvasLayer,
               cachedData.viewportWidth,
-              currentAnnotations
+              currentAnnotations,
             );
           }
           Zotero.PDFPreview.data.state.loadingPromise.resolve();

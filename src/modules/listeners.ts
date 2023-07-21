@@ -19,7 +19,7 @@ function initItemSelectListener() {
 
 function initPreviewResizeListener() {
   const splitter = document.querySelector(
-    "#zotero-items-splitter"
+    "#zotero-items-splitter",
   ) as HTMLElement;
   const onResize = (e: MouseEvent) => {
     if (!addon.data.alive) {
@@ -30,8 +30,8 @@ function initPreviewResizeListener() {
     const iframe = document.querySelector(
       `#${getContainerId(
         getPreviewType(),
-        addon.data.state.splitPosition
-      )}-iframe`
+        addon.data.state.splitPosition,
+      )}-iframe`,
     ) as HTMLIFrameElement | null;
     if (!iframe) {
       return;
@@ -48,7 +48,7 @@ function initPreviewResizeListener() {
         type: "updateWidth",
         width: width - 40,
       },
-      "*"
+      "*",
     );
     addon.hooks.onPreview(true);
   };

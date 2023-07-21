@@ -27,7 +27,7 @@ async function initContainer(type: PreviewType, position: "before" | "after") {
       },
       removeIfExists: true,
     },
-    container
+    container,
   );
 
   const iframe = container.querySelector("iframe");
@@ -38,6 +38,6 @@ async function initContainer(type: PreviewType, position: "before" | "after") {
       type: "updateToolbar",
       previewType: type,
     },
-    "*"
+    "*",
   );
 }

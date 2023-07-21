@@ -15,7 +15,7 @@ function registerPreviewTab() {
     {
       panelId,
       tabId,
-    }
+    },
   );
 }
 
