@@ -11,15 +11,15 @@ Fast & easy. Do not require any third-party softwares.
 
 ## 🧩 Outline
 
-[👋 Install](#👋-install)
+[👋 Install](#-install)
 
-[😎 Quick start](#😎-quick-start)
+[😎 Quick start](#-quick-start)
 
-[🔧 Development](#🔧-development)
+[🔧 Development](#-development)
 
-[🔎 My Zotero Plugins](#🔎-my-zotero-plugins)
+[🔎 My Zotero Plugins](#-my-zotero-plugins)
 
-[💰 Sponsor Me](#💰-sponsor-me)
+[💰 Sponsor Me](#-sponsor-me)
 
 ## 👋 Install
 
