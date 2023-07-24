@@ -3,14 +3,16 @@ import { PreviewType, getPreviewType } from "./utils/type";
 import { registerPrefPane } from "./modules/preference";
 import { registerSplit, setSplitCollapsed, updateSplit } from "./modules/split";
 import { registerPreviewTab, updatePreviewTab } from "./modules/tab";
-import { getString, initLocale } from "./utils/locale";
+import { initLocale } from "./utils/locale";
 import { initContainer } from "./modules/container";
 import {
   initItemSelectListener,
   initPreviewResizeListener,
   initTabSelectListener,
+  initWindowResizeListener,
 } from "./modules/listeners";
 import { preview } from "./modules/preview";
+import { waitUtilAsync } from "./utils/wait";
 
 async function onStartup() {
   await Promise.all([
@@ -24,52 +26,72 @@ async function onStartup() {
     `chrome://${config.addonRef}/content/icons/favicon.png`,
   );
   registerPrefPane();
-  registerPreviewTab();
-  await registerSplit(PreviewType.info);
-  await registerSplit(PreviewType.attachment);
-  updatePreviewTab();
-  updateSplit(PreviewType.info);
-  updateSplit(PreviewType.attachment);
-  await initContainer(PreviewType.preview, "after");
-  await initContainer(PreviewType.info, "before");
-  await initContainer(PreviewType.info, "after");
-  await initContainer(PreviewType.attachment, "before");
-  await initContainer(PreviewType.attachment, "after");
-  initItemSelectListener();
-  initTabSelectListener();
-  initPreviewResizeListener();
-  onPreview(true);
+  await waitUtilAsync(() => {
+    const win = ztoolkit.getGlobal("window");
+    return win && win.document.readyState === "complete";
+  });
+  await onMainWindowLoad(ztoolkit.getGlobal("window"));
 }
 
-function onPreview(forceUpdate = false) {
-  updatePreviewTab();
-  const previewType = getPreviewType();
-  ztoolkit.log(previewType);
-  updateSplit(PreviewType.info);
-  if (previewType === PreviewType.null) {
-    //
-  } else if (previewType === PreviewType.preview) {
-    //
-  } else {
-    updateSplit(previewType);
+async function onMainWindowLoad(win: Window): Promise<void> {
+  try {
+    const doc = win.document;
+    registerPreviewTab();
+    // Call `viewItem` to initialize #zotero-editpane-item-box
+    ztoolkit.getGlobal("ZoteroItemPane").viewItem(null, null, 0);
+    await registerSplit(doc, PreviewType.info);
+    await registerSplit(doc, PreviewType.attachment);
+    updatePreviewTab(doc);
+    updateSplit(doc, PreviewType.info);
+    updateSplit(doc, PreviewType.attachment);
+    await initContainer(doc, PreviewType.preview, "after");
+    await initContainer(doc, PreviewType.info, "before");
+    await initContainer(doc, PreviewType.info, "after");
+    await initContainer(doc, PreviewType.attachment, "before");
+    await initContainer(doc, PreviewType.attachment, "after");
+    initItemSelectListener(doc);
+    initTabSelectListener(doc);
+    initPreviewResizeListener(doc);
+    initWindowResizeListener(win);
+    onPreview(doc, true);
+  } catch (e) {
+    ztoolkit.log(e);
   }
-  preview(previewType, forceUpdate);
 }
 
-const onInitContainer = initContainer;
-
-const onCollapse = setSplitCollapsed;
+function onMainWindowUnload(win: Window): void {}
 
 function onShutdown(): void {
   ztoolkit.unregisterAll();
   // Reset selected panel
   (
-    document.querySelector("#zotero-view-tabbox") as XUL.TabBox
+    ztoolkit
+      .getGlobal("document")
+      .querySelector("#zotero-view-tabbox") as XUL.TabBox
   ).selectedIndex = 0;
   // Remove addon object
   addon.data.alive = false;
   delete Zotero[config.addonInstance];
 }
+
+function onPreview(document: Document, forceUpdate = false) {
+  updatePreviewTab(document);
+  const previewType = getPreviewType(document);
+  ztoolkit.log(previewType);
+  updateSplit(document, PreviewType.info);
+  if (previewType === PreviewType.null) {
+    //
+  } else if (previewType === PreviewType.preview) {
+    //
+  } else {
+    updateSplit(document, previewType);
+  }
+  preview(document, previewType, forceUpdate);
+}
+
+const onInitContainer = initContainer;
+
+const onCollapse = setSplitCollapsed;
 
 /**
  * This function is just an example of dispatcher for Notify events.
@@ -100,6 +122,8 @@ async function onNotify(
 
 export default {
   onStartup,
+  onMainWindowLoad,
+  onMainWindowUnload,
   onShutdown,
   onNotify,
   onPreview,

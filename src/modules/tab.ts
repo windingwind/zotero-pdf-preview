@@ -19,7 +19,7 @@ function registerPreviewTab() {
   );
 }
 
-function updatePreviewTab() {
+function updatePreviewTab(document: Document) {
   const hidden = !getPref("enableTab");
   const previewTab = document.querySelector(`#${tabId}`) as XUL.Tab;
   if (hidden) {

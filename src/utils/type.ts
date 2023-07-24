@@ -37,7 +37,7 @@ class Annotation {
   }
 }
 
-function getPreviewType(): PreviewType {
+function getPreviewType(document: Document): PreviewType {
   const paneDeck: any = document.querySelector("#zotero-item-pane-content");
   const selectedPane = paneDeck.selectedPanel;
   if (selectedPane.id === "zotero-view-tabbox") {

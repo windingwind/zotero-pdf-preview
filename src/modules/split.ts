@@ -8,7 +8,7 @@ function getSplitterId(type: PreviewType, position: "before" | "after") {
   return `${getContainerId(type, position)}-splitter`;
 }
 
-async function registerSplit(type: PreviewType) {
+async function registerSplit(document: Document, type: PreviewType) {
   let zitembox: XUL.Box;
   switch (type) {
     case PreviewType.info: {
@@ -29,10 +29,11 @@ async function registerSplit(type: PreviewType) {
       return;
     }
   }
+  zitembox.classList.add("pdf-preview-split-ref");
   addon.data.env === "development" && ztoolkit.log(type, zitembox);
   zitembox.parentElement?.setAttribute("orient", "vertical");
   zitembox.parentElement!.style.display = "revert";
-  zitembox.style.height = "100px";
+  // zitembox.style.height = "100px";
   const boxBeforeId = getContainerId(type, "before");
   const splitterBeforeId = getSplitterId(type, "before");
   const boxAfterId = getContainerId(type, "after");
@@ -65,6 +66,7 @@ async function registerSplit(type: PreviewType) {
                     ?.getAttribute("height") || "0",
                 );
                 setSplitCollapsed(
+                  doc,
                   doc
                     .querySelector(`#${splitterBeforeId}`)
                     ?.getAttribute("state") === "collapsed",
@@ -99,6 +101,7 @@ async function registerSplit(type: PreviewType) {
                     "0",
                 );
                 setSplitCollapsed(
+                  doc,
                   doc
                     .querySelector(`#${splitterAfterId}`)
                     ?.getAttribute("state") === "collapsed",
@@ -117,6 +120,7 @@ async function registerSplit(type: PreviewType) {
 }
 
 function setSplitCollapsed(
+  document: Document,
   collapsed: boolean | undefined = undefined,
   quietly = false,
 ) {
@@ -127,7 +131,7 @@ function setSplitCollapsed(
     const lastCollapsed = addon.data.state.splitCollapsed;
     addon.data.state.splitCollapsed = collapsed;
     if (lastCollapsed && !collapsed) {
-      addon.hooks.onPreview();
+      addon.hooks.onPreview(document);
     }
   }
   const toCollapseKeys = [PreviewType.info, PreviewType.attachment];
@@ -145,7 +149,7 @@ function setSplitCollapsed(
  * Update split hidden status
  * @param type
  */
-function updateSplit(type: PreviewType) {
+function updateSplit(document: Document, type: PreviewType) {
   // Check BBT layout
   // const BBTBox = (
   //   document.getElementById("zotero-editpane-item-box") as Element
@@ -187,17 +191,40 @@ function updateSplit(type: PreviewType) {
   const splitSplitter = document.querySelector(
     `#${getSplitterId(type, position)}`,
   ) as XUL.Splitter;
+  const splitRef = splitContainer.parentElement?.querySelector(
+    ".pdf-preview-split-ref",
+  ) as XUL.Box;
   if (hidden) {
     splitContainer.setAttribute("height", "0");
     splitContainer.style.visibility = "collapse";
     splitSplitter.style.visibility = "collapse";
   } else {
-    splitContainer.setAttribute(
+    // Collapse and see how much height it can take
+    splitSplitter.setAttribute("state", "collapsed");
+    let maxHeight =
+      splitContainer.parentElement!.clientHeight -
+      Array.from(splitContainer.parentElement?.children || []).reduce(
+        (acc, cur) => acc + cur.clientHeight,
+        0,
+      );
+    // Make sure the height is not too small
+    if (maxHeight < 1) {
+      maxHeight = 300;
+    }
+    let splitHeight = addon.data.state.splitHeight;
+    if (splitHeight > maxHeight) {
+      splitHeight = maxHeight;
+    }
+    addon.data.state.splitHeight = splitHeight;
+    splitContainer.setAttribute("height", splitHeight.toString());
+    // Stretch the rest part of the container to fill the space
+    splitRef.setAttribute(
       "height",
-      addon.data.state.splitHeight.toString(),
+      `${splitContainer.parentElement!.clientHeight - splitHeight}px`,
     );
     splitContainer.style.removeProperty("visibility");
     splitSplitter.style.removeProperty("visibility");
+    splitSplitter.setAttribute("state", "open");
   }
 
   // Hide another preview

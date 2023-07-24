@@ -131,6 +131,7 @@ function replaceString() {
   const optionsAddon = {
     files: [
       `${buildDir}/addon/**/*.xhtml`,
+      `${buildDir}/addon/**/*.html`,
       `${buildDir}/addon/**/*.json`,
       `${buildDir}/addon/prefs.js`,
       `${buildDir}/addon/manifest.json`,

@@ -7,7 +7,11 @@ export { initContainer };
  * @param type
  * @param position
  */
-async function initContainer(type: PreviewType, position: "before" | "after") {
+async function initContainer(
+  document: Document,
+  type: PreviewType,
+  position: "before" | "after",
+) {
   addon.data.state.initPromise = Zotero.Promise.defer();
   const containerId = getContainerId(type, position);
   const container = document.querySelector(`#${containerId}`);
@@ -19,6 +23,7 @@ async function initContainer(type: PreviewType, position: "before" | "after") {
     {
       tag: "iframe",
       id: `${containerId}-iframe`,
+      classList: ["pdf-preview-iframe"],
       properties: {
         src: "chrome://PDFPreview/content/previewPDF.html",
       },

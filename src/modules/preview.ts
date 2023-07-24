@@ -14,7 +14,7 @@ export { preview };
  * This function update item and decide whether to render preview
  * @param forceRender
  */
-async function updatePreviewItem(forceRender = false) {
+async function updatePreviewItem(document: Document, forceRender = false) {
   const items = ZoteroPane.getSelectedItems();
   if (items.length !== 1) {
     // Do not preview multiple selection
@@ -26,12 +26,12 @@ async function updatePreviewItem(forceRender = false) {
   }
   isDev() && ztoolkit.log(items, item);
   if (!item || !item.isPDFAttachment()) {
-    addon.hooks.onCollapse(true, true);
+    addon.hooks.onCollapse(document, true, true);
     // Do not preview non-pdf item
     return false;
   } else {
     if (!addon.data.state.splitCollapsed) {
-      addon.hooks.onCollapse(false, true);
+      addon.hooks.onCollapse(document, false, true);
     }
   }
   if (!forceRender && addon.data.state.item?.id === item.id) {
@@ -44,7 +44,7 @@ async function updatePreviewItem(forceRender = false) {
   return true;
 }
 
-async function preview(type: PreviewType, force = false) {
+async function preview(document: Document, type: PreviewType, force = false) {
   if (
     getPref(type === PreviewType.preview ? "enableTab" : "enableSplit") ===
     false
@@ -56,6 +56,7 @@ async function preview(type: PreviewType, force = false) {
   if (addon.data.state.previewCounts[type] >= RELOAD_COUNT) {
     addon.data.state.previewCounts[type] = 0;
     await addon.hooks.onInitContainer(
+      document,
       type,
       type === PreviewType.preview ? "after" : addon.data.state.splitPosition,
     );
@@ -78,6 +79,7 @@ async function preview(type: PreviewType, force = false) {
   3. force. user clicked the preview button
   */
   await updatePreviewItem(
+    document,
     type !== addon.data.state.lastType ||
       // @ts-ignore cachedData is not a standard property
       addon.data.state.item?.id !== iframe.contentWindow?.cachedData?.itemID ||
