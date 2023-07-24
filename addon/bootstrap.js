@@ -58,7 +58,11 @@ async function waitForZotero() {
             ) {
               Zotero.__addonInstance__?.hooks.onMainWindowLoad(domWindow);
               domWindow.addEventListener("unload", function () {
-                domWindow.removeEventListener("unload", arguments.callee, false);
+                domWindow.removeEventListener(
+                  "unload",
+                  arguments.callee,
+                  false,
+                );
                 Zotero.__addonInstance__?.hooks.onMainWindowUnload(domWindow);
               });
             }
