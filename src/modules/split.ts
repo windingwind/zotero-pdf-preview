@@ -8,7 +8,7 @@ function getSplitterId(type: PreviewType, position: "before" | "after") {
   return `${getContainerId(type, position)}-splitter`;
 }
 
-async function registerSplit(document: Document, type: PreviewType) {
+async function registerSplit(type: PreviewType) {
   let zitembox: XUL.Box;
   switch (type) {
     case PreviewType.info: {
@@ -66,7 +66,6 @@ async function registerSplit(document: Document, type: PreviewType) {
                     ?.getAttribute("height") || "0",
                 );
                 setSplitCollapsed(
-                  doc,
                   doc
                     .querySelector(`#${splitterBeforeId}`)
                     ?.getAttribute("state") === "collapsed",
@@ -101,7 +100,6 @@ async function registerSplit(document: Document, type: PreviewType) {
                     "0",
                 );
                 setSplitCollapsed(
-                  doc,
                   doc
                     .querySelector(`#${splitterAfterId}`)
                     ?.getAttribute("state") === "collapsed",
@@ -120,7 +118,6 @@ async function registerSplit(document: Document, type: PreviewType) {
 }
 
 function setSplitCollapsed(
-  document: Document,
   collapsed: boolean | undefined = undefined,
   quietly = false,
 ) {
@@ -149,7 +146,7 @@ function setSplitCollapsed(
  * Update split hidden status
  * @param type
  */
-function updateSplit(document: Document, type: PreviewType) {
+function updateSplit(type: PreviewType) {
   // Check BBT layout
   // const BBTBox = (
   //   document.getElementById("zotero-editpane-item-box") as Element

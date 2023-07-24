@@ -39,21 +39,21 @@ async function onMainWindowLoad(win: Window): Promise<void> {
     registerPreviewTab();
     // Call `viewItem` to initialize #zotero-editpane-item-box
     ztoolkit.getGlobal("ZoteroItemPane").viewItem(null, null, 0);
-    await registerSplit(doc, PreviewType.info);
-    await registerSplit(doc, PreviewType.attachment);
-    updatePreviewTab(doc);
-    updateSplit(doc, PreviewType.info);
-    updateSplit(doc, PreviewType.attachment);
-    await initContainer(doc, PreviewType.preview, "after");
-    await initContainer(doc, PreviewType.info, "before");
-    await initContainer(doc, PreviewType.info, "after");
-    await initContainer(doc, PreviewType.attachment, "before");
-    await initContainer(doc, PreviewType.attachment, "after");
-    initItemSelectListener(doc);
-    initTabSelectListener(doc);
-    initPreviewResizeListener(doc);
-    initWindowResizeListener(win);
-    onPreview(doc, true);
+    await registerSplit(PreviewType.info);
+    await registerSplit(PreviewType.attachment);
+    updatePreviewTab();
+    updateSplit(PreviewType.info);
+    updateSplit(PreviewType.attachment);
+    await initContainer(PreviewType.preview, "after");
+    await initContainer(PreviewType.info, "before");
+    await initContainer(PreviewType.info, "after");
+    await initContainer(PreviewType.attachment, "before");
+    await initContainer(PreviewType.attachment, "after");
+    initItemSelectListener();
+    initTabSelectListener();
+    initPreviewResizeListener();
+    initWindowResizeListener();
+    onPreview(true);
   } catch (e) {
     ztoolkit.log(e);
   }
@@ -74,19 +74,19 @@ function onShutdown(): void {
   delete Zotero[config.addonInstance];
 }
 
-function onPreview(document: Document, forceUpdate = false) {
-  updatePreviewTab(document);
+function onPreview(forceUpdate = false) {
+  updatePreviewTab();
   const previewType = getPreviewType(document);
   ztoolkit.log(previewType);
-  updateSplit(document, PreviewType.info);
+  updateSplit(PreviewType.info);
   if (previewType === PreviewType.null) {
     //
   } else if (previewType === PreviewType.preview) {
     //
   } else {
-    updateSplit(document, previewType);
+    updateSplit(previewType);
   }
-  preview(document, previewType, forceUpdate);
+  preview(previewType, forceUpdate);
 }
 
 const onInitContainer = initContainer;

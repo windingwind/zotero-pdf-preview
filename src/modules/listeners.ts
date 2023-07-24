@@ -10,31 +10,31 @@ export {
 // Use a global variable to prevent multiple resize events from triggering
 let resizing = 0;
 
-function initItemSelectListener(document: Document) {
+function initItemSelectListener() {
   const listener = () => {
     if (!addon.data.alive) {
       ZoteroPane.itemsView.onSelect.removeListener(listener);
     }
     ztoolkit.log("Preview triggered by selection change");
-    addon.hooks.onPreview(document);
+    addon.hooks.onPreview();
   };
   ZoteroPane.itemsView.onSelect.addListener(listener);
 }
 
-function initPreviewResizeListener(document: Document) {
+function initPreviewResizeListener() {
   const splitter = document.querySelector(
     "#zotero-items-splitter",
   ) as HTMLElement;
-  splitter.addEventListener("mouseup", getOnItemBoxResize(document));
+  splitter.addEventListener("mouseup", getOnItemBoxResize());
 }
 
-function initWindowResizeListener(window: Window) {
-  const onWindowResize = getOnWindowResize(window);
+function initWindowResizeListener() {
+  const onWindowResize = getOnWindowResize();
   window.addEventListener("resize", onWindowResize);
   onWindowResize();
 }
 
-function initTabSelectListener(document: Document) {
+function initTabSelectListener() {
   const tabbox = document.querySelector("#zotero-view-tabbox") as XUL.TabBox;
   const triggeredIds = [
     "item-box-container",
@@ -46,13 +46,13 @@ function initTabSelectListener(document: Document) {
     }
     if (triggeredIds.includes(tabbox.selectedPanel?.id)) {
       ztoolkit.log("Preview triggered by tab change");
-      addon.hooks.onPreview(document, true);
+      addon.hooks.onPreview(true);
     }
   };
   tabbox.addEventListener("select", listener);
 }
 
-function getOnItemBoxResize(document: Document) {
+function getOnItemBoxResize() {
   function onItemBoxResize() {
     const splitter = document.querySelector(
       "#zotero-items-splitter",
@@ -88,16 +88,15 @@ function getOnItemBoxResize(document: Document) {
       resizing -= 1;
       if (resizing === 0) {
         ztoolkit.log("Preview triggered by resize");
-        addon.hooks.onPreview(document, true);
+        addon.hooks.onPreview(true);
       }
     }, 100);
   }
   return onItemBoxResize;
 }
 
-function getOnWindowResize(window: Window) {
-  const document = window.document;
-  const onItemBoxResize = getOnItemBoxResize(document);
+function getOnWindowResize() {
+  const onItemBoxResize = getOnItemBoxResize();
   function onWindowResize(e?: UIEvent) {
     if (!addon.data.alive) {
       window.removeEventListener("resize", onWindowResize);
