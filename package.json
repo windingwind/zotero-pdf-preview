@@ -1,6 +1,6 @@
 {
   "name": "zotero-pdf-preview",
-  "version": "1.0.0-2",
+  "version": "1.0.0-3",
   "description": "PDF Preview for Zotero.",
   "config": {
     "addonName": "Zotero PDF Preview",
