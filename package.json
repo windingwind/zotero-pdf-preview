@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/windingwind/zotero-pdf-preview#readme",
   "dependencies": {
-    "zotero-plugin-toolkit": "^2.1.5"
+    "zotero-plugin-toolkit": "^2.2.2"
   },
   "devDependencies": {
     "@types/node": "^20.3.1",
