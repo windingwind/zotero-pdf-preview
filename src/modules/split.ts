@@ -128,7 +128,7 @@ function setSplitCollapsed(
     const lastCollapsed = addon.data.state.splitCollapsed;
     addon.data.state.splitCollapsed = collapsed;
     if (lastCollapsed && !collapsed) {
-      addon.hooks.onPreview(document);
+      addon.hooks.onPreview();
     }
   }
   const toCollapseKeys = [PreviewType.info, PreviewType.attachment];
