@@ -54,7 +54,7 @@
     "esbuild": "^0.18.6",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "3.0.0",
+    "prettier": "3.0.2",
     "release-it": "^16.1.2",
     "replace-in-file": "^7.0.1",
     "typescript": "^5.1.3",
