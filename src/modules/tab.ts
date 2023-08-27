@@ -8,7 +8,7 @@ const tabId = `${panelId}-tab`;
 
 function registerPreviewTab() {
   ztoolkit.LibraryTabPanel.register(
-    "Preview",
+    getPref("previewTabName") as string,
     (panel, win) => {
       return void 0;
     },
