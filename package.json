@@ -1,9 +1,9 @@
 {
   "name": "zotero-pdf-preview",
   "version": "1.0.0-4",
-  "description": "PDF Preview for Zotero.",
+  "description": "Preview attachments in library.",
   "config": {
-    "addonName": "Zotero PDF Preview",
+    "addonName": "Preview for Zotero",
     "addonID": "pdfpreview@windingwind.com",
     "addonRef": "pdfpreview",
     "addonInstance": "PDFPreview",
