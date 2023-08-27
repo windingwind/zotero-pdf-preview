@@ -4,6 +4,8 @@ import { waitUtilAsync } from "../utils/wait";
 
 export { registerSplit, updateSplit, setSplitCollapsed };
 
+const splitterHeight = 3;
+
 function getSplitterId(type: PreviewType, position: "before" | "after") {
   return `${getContainerId(type, position)}-splitter`;
 }
@@ -54,7 +56,7 @@ async function registerSplit(type: PreviewType) {
             collapse: "before",
           },
           styles: {
-            height: "3px",
+            height: `${splitterHeight}px`,
           },
           listeners: [
             {
@@ -89,7 +91,7 @@ async function registerSplit(type: PreviewType) {
             collapse: "after",
           },
           styles: {
-            height: "3px",
+            height: `${splitterHeight}px`,
           },
           listeners: [
             {
@@ -203,7 +205,8 @@ function updateSplit(type: PreviewType) {
       Array.from(splitContainer.parentElement?.children || []).reduce(
         (acc, cur) => acc + cur.clientHeight,
         0,
-      );
+      ) +
+      splitterHeight;
     // Make sure the height is not too small
     if (maxHeight < 1) {
       maxHeight = 300;

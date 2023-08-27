@@ -3,14 +3,20 @@ declare const _globalThis: {
   Zotero: _ZoteroTypes.Zotero;
   ZoteroPane: _ZoteroTypes.ZoteroPane;
   Zotero_Tabs: typeof Zotero_Tabs;
+  ZoteroContextPane: typeof ZoteroContextPane;
   window: Window;
   document: Document;
-  ztoolkit: typeof ztoolkit;
+  crypto: Crypto;
+  TextEncoder: typeof TextEncoder;
+  ztoolkit: ZToolkit;
   addon: typeof addon;
 };
 
-// declare const ztoolkit: import("../src/addon").MyToolkit;
-declare const ztoolkit: import("zotero-plugin-toolkit").ZoteroToolkit;
+declare type ZToolkit = ReturnType<
+  typeof import("../src/utils/ztoolkit").createZToolkit
+>;
+
+declare const ztoolkit: ZToolkit;
 
 declare const rootURI: string;
 

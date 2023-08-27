@@ -21,19 +21,28 @@ async function onStartup() {
     Zotero.uiReadyPromise,
   ]);
   initLocale();
-  ztoolkit.ProgressWindow.setIconURI(
-    "default",
-    `chrome://${config.addonRef}/content/icons/favicon.png`,
-  );
   registerPrefPane();
-  await waitUtilAsync(() => {
-    const win = ztoolkit.getGlobal("window");
-    return win && win.document.readyState === "complete";
-  });
   await onMainWindowLoad(ztoolkit.getGlobal("window"));
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
+  await new Promise((resolve) => {
+    if (win.document.readyState !== "complete") {
+      win.document.addEventListener("readystatechange", () => {
+        if (win.document.readyState === "complete") {
+          resolve(void 0);
+        }
+      });
+    }
+    resolve(void 0);
+  });
+
+  await Promise.all([
+    Zotero.initializationPromise,
+    Zotero.unlockPromise,
+    Zotero.uiReadyPromise,
+  ]);
+
   try {
     const doc = win.document;
     registerPreviewTab();
