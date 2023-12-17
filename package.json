@@ -1,6 +1,6 @@
 {
   "name": "zotero-pdf-preview",
-  "version": "1.0.0-4",
+  "version": "1.0.0-5",
   "description": "Preview attachments in library.",
   "config": {
     "addonName": "Preview for Zotero",
