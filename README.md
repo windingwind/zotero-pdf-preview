@@ -23,7 +23,10 @@ Fast & easy. Do not require any third-party softwares.
 
 ## 👋 Install
 
-- Download the latest release (.xpi file) from the [Releases Page](https://github.com/windingwind/zotero-pdf-preview/releases)_Note_ If you're using Firefox as your browser, right-click the `.xpi` and select "Save As.."
+> For Zotero 6, install the [latest stable version](https://github.com/windingwind/zotero-pdf-preview/releases/latest); For Zotero 7, install the [latest prerelease version](https://github.com/windingwind/zotero-pdf-preview/releases/)
+
+- Download the latest release (.xpi file) from the [Releases Page](https://github.com/windingwind/zotero-pdf-preview/releases)
+  _Note_ If you're using Firefox as your browser, right-click the `.xpi` and select "Save As.."
 - In Zotero click `Tools` in the top menu bar and then click `Addons`
 - Go to the Extensions page and then click the gear icon in the top right.
 - Select `Install Add-on from file`.
