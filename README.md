@@ -1,3 +1,5 @@
+> This repository/plugin is archived and no longer maintained, since from Zotero 7.0.0-beta.55, attachment preview is supported natively.
+
 # Preview for Zotero
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
