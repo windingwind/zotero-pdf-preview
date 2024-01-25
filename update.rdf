@@ -10,7 +10,7 @@
               <rdf:Description>
                 <em:id>zotero@chnm.gmu.edu</em:id>
                 <em:minVersion>5.999</em:minVersion>
-                <em:maxVersion>*</em:maxVersion>
+                <em:maxVersion>7.0.0-beta.54</em:maxVersion>
                 <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/download/0.3.7/zotero-pdf-preview.xpi</em:updateLink>
               </rdf:Description>
             </em:targetApplication>
@@ -18,7 +18,7 @@
               <rdf:Description>
                 <em:id>juris-m@juris-m.github.io</em:id>
                 <em:minVersion>5.999</em:minVersion>
-                <em:maxVersion>*</em:maxVersion>
+                <em:maxVersion>7.0.0-beta.54</em:maxVersion>
                 <em:updateLink>https://github.com/windingwind/zotero-pdf-preview/releases/download/0.3.7/zotero-pdf-preview.xpi</em:updateLink>
               </rdf:Description>
             </em:targetApplication>

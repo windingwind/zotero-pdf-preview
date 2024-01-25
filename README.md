@@ -2,7 +2,6 @@
 
 # Preview for Zotero
 
-[![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 
 ![teaser](./image/README/teaser.gif)
@@ -20,8 +19,6 @@ Fast & easy. Do not require any third-party softwares.
 [🔧 Development](#-development)
 
 [🔎 My Zotero Plugins](#-my-zotero-plugins)
-
-[💰 Sponsor Me](#-sponsor-me)
 
 ## 👋 Install
 
@@ -156,11 +153,3 @@ Use this code under AGPL. No warranties are provided. Keep the laws of your loca
 - [zotero-pdf-translate](https://github.com/windingwind/zotero-pdf-translate): PDF translation for Zotero
 - [zotero-pdf-preview](https://github.com/windingwind/zotero-tag): PDF preview for Zotero
 - [zotero-tag](https://github.com/windingwind/zotero-tag): Automatically tag items/Batch tagging
-
-## 💰 Sponsor Me
-
-I'm windingwind, an active Zotero(https://www.zotero.org) plugin developer. Devoting to making reading papers easier.
-
-Sponsor me to buy a cup of coffee. I spend more than 24 hours every week coding, debugging, and replying to issues in my plugin repositories. The plugins are open-source and totally free.
-
-If you sponsor more than $10 a month, you can list your name/logo here and have priority for feature requests/bug fixes!
